@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sitama/modules/02_login/login_page.dart';
+import 'package:pbl_sitama/modules/02_login/login_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -181,7 +181,7 @@ class SlidingContent extends StatelessWidget {
         Center(
           child: Image.asset(
             imagePath,
-            height: 550,
+            height: 400,
             width: 350,
             fit: BoxFit.contain,
           ),
