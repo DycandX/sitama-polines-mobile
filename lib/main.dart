@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/modules/02_login/login_page.dart';
+import 'package:sitama/modules/02_login/login_page.dart';
 
 void main() => runApp(const MyApp());
 

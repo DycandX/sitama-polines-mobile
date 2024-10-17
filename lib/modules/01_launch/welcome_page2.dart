@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/main.dart';
-
+import 'package:sitama/main.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {

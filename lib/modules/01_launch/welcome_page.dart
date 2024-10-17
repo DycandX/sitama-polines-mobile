@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/modules/01_launch/welcome_page2.dart';
-
+import 'welcome_page2.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
