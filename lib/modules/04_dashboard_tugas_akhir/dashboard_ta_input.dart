@@ -104,11 +104,11 @@ class FinalProjectScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigasi ke DashboardScreen
+                        // Navigasi ke Dashboard_Screen
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DashboardScreen()));
+                                builder: (context) => Dashboard_Screen()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,

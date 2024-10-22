@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/main.dart';
 
-class Dashboard_Screen extends StatelessWidget {
+class DashboardTaTampilan extends StatefulWidget {
+  const DashboardTaTampilan({super.key});
+
+  @override
+  State<DashboardTaTampilan> createState() => _DashboardTaTampilanState();
+}
+
+class _DashboardTaTampilanState extends State<DashboardTaTampilan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,11 +44,10 @@ class Dashboard_Screen extends StatelessWidget {
                 // Avatar dan Nama User
                 Row(
                   children: [
-                    SizedBox(width: 30),
+                    SizedBox(width: 160),
                     Text(
                       'Adnan Bima Adhi N',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(
@@ -56,27 +62,26 @@ class Dashboard_Screen extends StatelessWidget {
             SizedBox(height: 30),
             // Judul
             Text(
-              'Dashboard',
+              'Dashboard Tugas Akhir',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87),
             ),
-            Text(
-              'Tugas Akhir',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
-            ),
+            // Text(
+            //   'Tugas Akhir',
+            //   style: TextStyle(
+            //       fontSize: 18,
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.black87),
+            // ),
             SizedBox(height: 20),
             // Expansion for Data Mahasiswa
             CustomExpansionCard(
               title: 'Data Mahasiswa',
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     children: [
                       CustomTextField(label: 'Nama'),
@@ -99,14 +104,12 @@ class Dashboard_Screen extends StatelessWidget {
               title: 'Data Pembimbing',
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     children: [
                       Text(
                         'Dosen Pembimbing 1',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(height: 10),
                       CustomTextField(label: 'Nama Pembimbing'),
@@ -115,8 +118,7 @@ class Dashboard_Screen extends StatelessWidget {
                       SizedBox(height: 10),
                       Text(
                         'Dosen Pembimbing 2',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(height: 10),
                       CustomTextField(label: 'Nama Pembimbing'),
