@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/main.dart';
 
 class DashboardTaTampilan extends StatefulWidget {
   const DashboardTaTampilan({super.key});
@@ -33,13 +32,13 @@ class _DashboardTaTampilanState extends State<DashboardTaTampilan> {
                   },
                   elevation: 2.0,
                   fillColor: Colors.indigo[900],
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
                   child: Icon(
                     Icons.arrow_back,
                     size: 15.0,
                     color: Colors.white,
                   ),
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
                 ),
                 // Avatar dan Nama User
                 Row(
@@ -141,7 +140,7 @@ class CustomExpansionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  CustomExpansionCard({required this.title, required this.children});
+  const CustomExpansionCard({super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -164,8 +163,8 @@ class CustomExpansionCard extends StatelessWidget {
           title,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        children: children,
         trailing: Icon(Icons.arrow_drop_down, size: 30, color: Colors.black),
+        children: children,
       ),
     );
   }
@@ -175,7 +174,7 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final int maxLines;
 
-  CustomTextField({required this.label, this.maxLines = 1});
+  const CustomTextField({super.key, required this.label, this.maxLines = 1});
 
   @override
   Widget build(BuildContext context) {
