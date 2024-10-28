@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
 
-class Dashboard_Screen extends StatelessWidget {
-  const Dashboard_Screen({super.key});
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 10,
-        toolbarHeight: 10,
+        leadingWidth: 10, // Adjusted for better alignment
+        toolbarHeight: 10, // Adjusted height for better header presentation
         backgroundColor: Colors.indigo[900],
-        title: Text('', style: TextStyle(color: const Color.fromRGBO(255, 255, 255, 1))),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Menampilkan RawMaterialButton dan Row dalam satu baris
+            // RawMaterialButton and Row in the same line
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                RawMaterialButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.indigo[900],
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: 15.0,
-                    color: Colors.white,
+                Transform.translate(
+                  offset: Offset(-25, 0), // Menggeser ke kiri sebesar 10 piksel
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.indigo[900],
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 15.0,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
+                Spacer(),
                 // Avatar dan Nama User
                 Row(
                   children: [
                     SizedBox(width: 30),
                     Text(
                       'Adnan Bima Adhi N',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(
@@ -55,20 +65,31 @@ class Dashboard_Screen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 30),
-            // Judul
-            Text(
-              'Dashboard',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
-            ),
-            Text(
-              'Tugas Akhir',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
+            // Titles
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 10.0), // Menggeser judul ke kanan
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Dashboard Tugas Akhir',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  // Text(
+                  //   'Tugas Akhir',
+                  //   style: TextStyle(
+                  //     fontSize: 18,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.black87,
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
             SizedBox(height: 20),
             // Expansion for Data Mahasiswa
@@ -79,6 +100,7 @@ class Dashboard_Screen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomTextField(label: 'Nama'),
                       SizedBox(height: 10),
@@ -94,6 +116,7 @@ class Dashboard_Screen extends StatelessWidget {
                 ),
               ],
             ),
+
             SizedBox(height: 15),
             // Expansion for Data Pembimbing
             CustomExpansionCard(
@@ -103,27 +126,29 @@ class Dashboard_Screen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Dosen Pembimbing 1',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
-                      SizedBox(height: 10),
-                      CustomTextField(label: 'Nama Pembimbing'),
+                      SizedBox(height: 20),
+                      CustomTextField(
+                        label: 'Nama Pembimbing',
+                      ),
                       SizedBox(height: 10),
                       CustomTextField(label: 'NIP'),
-                      SizedBox(height: 10),
+                      SizedBox(height: 40),
                       Text(
                         'Dosen Pembimbing 2',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       CustomTextField(label: 'Nama Pembimbing'),
                       SizedBox(height: 10),
                       CustomTextField(label: 'NIP'),
-                      SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -136,53 +161,118 @@ class Dashboard_Screen extends StatelessWidget {
   }
 }
 
-class CustomExpansionCard extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
+  final String label;
+  final int maxLines;
+
+  const CustomTextField({required this.label, this.maxLines = 1});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[200], // Light grey background
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: TextField(
+            maxLines: maxLines,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Updated CustomExpansionCard
+class CustomExpansionCard extends StatefulWidget {
   final String title;
   final List<Widget> children;
 
-  const CustomExpansionCard({super.key, required this.title, required this.children});
+  const CustomExpansionCard({required this.title, required this.children});
+
+  @override
+  _CustomExpansionCardState createState() => _CustomExpansionCardState();
+}
+
+class _CustomExpansionCardState extends State<CustomExpansionCard> {
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
             offset: Offset(0, 3),
           ),
         ],
       ),
-      child: ExpansionTile(
-        leading: Icon(Icons.menu, size: 30, color: Colors.black),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        trailing: Icon(Icons.arrow_drop_down, size: 30, color: Colors.black),
-        children: children,
-      ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final String label;
-  final int maxLines;
-
-  const CustomTextField({super.key, required this.label, this.maxLines = 1});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+              child: Row(
+                children: [
+                  Icon(Icons.menu, color: Colors.black87),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    color: Colors.black87,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_isExpanded) ...[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.children,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

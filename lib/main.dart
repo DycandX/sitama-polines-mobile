@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/02_login/login_page.dart';
-import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_TA_tampilan.dart';
+import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
+//import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_TA_tampilan.dart';
 // import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
 
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       
-      home: DashboardTaTampilan(),
+      home: DashboardScreen(),
       //home: WelcomePage(),
     );
   }
