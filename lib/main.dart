@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/02_login/login_page.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +9,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      home: HomeScreen(),
     );
   }
 }
