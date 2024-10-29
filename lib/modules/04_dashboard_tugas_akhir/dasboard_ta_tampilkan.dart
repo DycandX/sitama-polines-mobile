@@ -8,6 +8,9 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  // Variabel untuk menandakan apakah plotting sudah dilakukan atau belum
+  bool isPlottingDone = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,25 +76,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dashboard Tugas Akhir',
+                    'Dashboard',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
-                  // Text(
-                  //   'Tugas Akhir',
-                  //   style: TextStyle(
-                  //     fontSize: 18,
-                  //     fontWeight: FontWeight.bold,
-                  //     color: Colors.black87,
-                  //   ),
-                  // ),
+                  Text(
+                    'Tugas Akhir',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
                 ],
               ),
             ),
             SizedBox(height: 20),
+
             // Expansion for Data Mahasiswa
             CustomExpansionCard(
               title: 'Data Mahasiswa',
@@ -102,15 +106,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextField(label: 'Nama'),
+                      CustomTextField(
+                          label: 'Nama', value: 'Adnan Bima Adhi Nugroho'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIM'),
+                      CustomTextField(label: 'NIM', value: '43323203'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Program Studi'),
+                      CustomTextField(
+                          label: 'Program Studi',
+                          value: 'Teknologi Rekayasa Komputer'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Tahun Ajaran'),
+                      CustomTextField(
+                          label: 'Tahun Ajaran', value: '2024/2025'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Judul Tugas Akhir', maxLines: 2),
+                      CustomTextField(
+                          label: 'Judul Tugas Akhir',
+                          value: 'Sitama Mobile',
+                          maxLines: 2),
                     ],
                   ),
                 ),
@@ -135,10 +146,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       SizedBox(height: 20),
                       CustomTextField(
-                        label: 'Nama Pembimbing',
-                      ),
+                          label: 'Nama Pembimbing',
+                          value: 'Suko Tyas Pernanda, S.ST., M.Cs	'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIP'),
+                      CustomTextField(label: 'NIP', value: '1987654321'),
                       SizedBox(height: 40),
                       Text(
                         'Dosen Pembimbing 2',
@@ -146,14 +157,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(height: 20),
-                      CustomTextField(label: 'Nama Pembimbing'),
+                      CustomTextField(
+                          label: 'Nama Pembimbing',
+                          value: 'Wiktasari, S.T., M.Kom.	'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIP'),
+                      CustomTextField(label: 'NIP', value: '1987654322'),
                     ],
                   ),
                 ),
               ],
             ),
+
+            SizedBox(height: 20),
+
+            // Tampilkan peringatan jika plotting belum selesai
+            if (!isPlottingDone)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 8.0), // Jarak dari tepi layar
+                child: Container(
+                  width: double.infinity, // Lebar penuh sesuai layar
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow[500],
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, // Menempatkan konten di tengah vertikal
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Menempatkan konten di tengah horizontal
+                    children: [
+                      Text(
+                        'DATA PEMBIMBING BELUM DI PLOTTING!',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign
+                            .center, // Pusatkan teks dalam `Text` widget
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Sedang Proses Plotting Pembimbing',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign
+                            .center, // Pusatkan teks dalam `Text` widget
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -163,9 +231,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 class CustomTextField extends StatelessWidget {
   final String label;
+  final String value;
   final int maxLines;
 
-  const CustomTextField({required this.label, this.maxLines = 1});
+  const CustomTextField({
+    required this.label,
+    required this.value,
+    this.maxLines = 1,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -182,17 +255,17 @@ class CustomTextField extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.grey[200], // Light grey background
             borderRadius: BorderRadius.circular(5),
           ),
-          child: TextField(
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 14, color: Colors.black87),
             maxLines: maxLines,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
