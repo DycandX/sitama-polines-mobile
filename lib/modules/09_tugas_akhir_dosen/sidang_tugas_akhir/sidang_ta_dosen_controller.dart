@@ -7,8 +7,10 @@ class HomeScreenController {
 
   // List of pages to navigate within the bottom navigation
   final List<Widget> pages = [
-    HomeScreen(),    // Replace with your actual screen implementations
-    Scaffold(body: Center(child: Text('Bimbingan'))), // Dummy screens for illustration
+    HomeScreen(), // Replace with your actual screen implementations
+    Scaffold(
+        body:
+            Center(child: Text('Bimbingan'))), // Dummy screens for illustration
     Scaffold(body: Center(child: Text('Menguji'))),
     Scaffold(body: Center(child: Text('Profile'))),
   ];
