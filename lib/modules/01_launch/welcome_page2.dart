@@ -73,7 +73,7 @@ class WelcomePage3 extends StatelessWidget {
             // Image Section (Replace with your image asset)
             Center(
               child: Image.asset(
-                "../images/welcome_image3.png", // Replace with actual image path
+                "assets/images/welcome_image3.png", // Replace with actual image path
                 height: 500,
                 width: 350,
                 fit: BoxFit.contain,

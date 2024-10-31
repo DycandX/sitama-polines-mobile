@@ -110,13 +110,13 @@ class _WelcomePage2State extends State<WelcomePage2>
                   // Image Section
                   Center(
                     child: Image.asset(
-                      "../images/welcome_image2.png", // Replace with actual image path
+                      "assets/images/welcome_image2.png", // Replace with actual image path
                       height: 550,
                       width: 350,
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 0),
                   // Text Section
                   Align(
                     alignment: Alignment.centerLeft,
