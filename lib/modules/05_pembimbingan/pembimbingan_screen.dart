@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'status_bimbingan_screen.dart';
+import 'daftar_bimbingan_screen.dart';
 
 class PembimbinganScreen extends StatefulWidget {
   const PembimbinganScreen({Key? key}) : super(key: key);
