@@ -9,7 +9,7 @@ class PembimbinganScreen extends StatefulWidget {
 }
 
 class _PembimbinganScreenState extends State<PembimbinganScreen> {
-  bool isDataPlotted = false; // Ini seharusnya datang dari database
+  bool isDataPlotted = true; // Ini seharusnya datang dari database
   String pembimbing1 = "Pembimbing 1";
   String pembimbing2 = "Pembimbing 2";
 
