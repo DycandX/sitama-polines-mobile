@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/02_login/login_page.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      home: JadwalSidangPage(),
+      //home: homeMahasiswaScreen(),
       //home: WelcomePage(),
     );
   }
