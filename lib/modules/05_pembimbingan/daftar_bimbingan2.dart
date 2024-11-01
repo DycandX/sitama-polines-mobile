@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/modules/05_pembimbingan/status_bimbingan_screen.dart';
-import 'buat_bimbingan_screen.dart';
 
 class DaftarBimbingan2 extends StatefulWidget {
   final String pembimbing;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/01_launch/welcome_page.dart';
-import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
-import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
+//import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
+//import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
+//import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 //import 'package:pbl_sitama/modules/02_login/login_page.dart';
 //import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
 //import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       
-      home: MahasiswaBimbingan(),
+      //home: MahasiswaBimbingan(),
       //home: PembimbinganScreen(),
-      //home: WelcomePage(),
+      home: WelcomePage(),
       //home: SidangTaScreen(),
       //home: DaftarTaScreen(),
       //home: PembimbinganScreen(),
