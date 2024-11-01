@@ -9,7 +9,7 @@ class PembimbinganScreen extends StatefulWidget {
 }
 
 class _PembimbinganScreenState extends State<PembimbinganScreen> {
-  bool isDataPlotted = true; // Ini seharusnya datang dari database
+  bool isDataPlotted = true; // This should come from the database
   String pembimbing1 = "Pembimbing 1";
   String pembimbing2 = "Pembimbing 2";
 
@@ -26,51 +26,53 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                        padding: const EdgeInsets.only(left: 8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            borderRadius: BorderRadius.circular(50),
                             color: const Color.fromRGBO(40, 42, 116, 1),
                           ),
                           child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.arrow_back, color: Colors.white),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
                           ),
                         ),
                       ),
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                            padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
-                              'XAVIERA PUTRI S.T, M.Kom.',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w100,
+                              'Adnan Bima Adhi N',
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.black,
                               ),
                             ),
                           ),
                           CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                AssetImage('assets/images/xaviera.png'),
-                            backgroundColor: Colors.blue,
+                            radius: 20,
+                            backgroundImage: AssetImage('assets/images/profile.png'),
                           ),
                         ],
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
                   // Pembimbing 1 Box
                   PembimbingBox(
                     pembimbing: pembimbing1,
+                    statusText: "Lengkap",
+                    statusColor: Colors.green,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                DaftarBimbinganScreen(pembimbing: pembimbing1)),
+                          builder: (context) => DaftarBimbinganScreen(pembimbing: pembimbing1),
+                        ),
                       );
                     },
                   ),
@@ -78,12 +80,14 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                   // Pembimbing 2 Box
                   PembimbingBox(
                     pembimbing: pembimbing2,
+                    statusText: "Belum Lengkap",
+                    statusColor: Colors.red,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                DaftarBimbinganScreen(pembimbing: pembimbing2)),
+                          builder: (context) => DaftarBimbinganScreen(pembimbing: pembimbing2),
+                        ),
                       );
                     },
                   ),
@@ -104,10 +108,14 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
 
 class PembimbingBox extends StatelessWidget {
   final String pembimbing;
+  final String statusText;
+  final Color statusColor;
   final VoidCallback onTap;
 
   const PembimbingBox({
     required this.pembimbing,
+    required this.statusText,
+    required this.statusColor,
     required this.onTap,
   });
 
@@ -116,19 +124,69 @@ class PembimbingBox extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              pembimbing,
-              style: const TextStyle(fontSize: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  pembimbing,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Wiktasari, S.T, M.Kom.",
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      color: statusColor,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      statusText,
+                      style: TextStyle(color: statusColor, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const Icon(Icons.arrow_forward),
+            ElevatedButton(
+              onPressed: onTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              ),
+              child: const Text(
+                "Lihat",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
           ],
         ),
       ),
