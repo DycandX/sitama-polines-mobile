@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
+
 
 class HomeScreenController {
   // To track the selected bottom navigation index

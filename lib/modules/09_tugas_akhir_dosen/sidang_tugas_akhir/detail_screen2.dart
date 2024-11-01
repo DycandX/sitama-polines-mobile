@@ -1,57 +1,47 @@
 import 'package:flutter/material.dart';
 
-class DetailScreen extends StatefulWidget {
+class DetailScreen2 extends StatefulWidget {
   final String nim;
   final String name;
   final String tahunAkademik;
   final String judulTA;
   final String ruangan;
-  final String sebagai;
-  final String kedisiplinanBimbingan;
-  final String kreativitasPemecahanMasalah;
+  final String sebagai; // Role that should not be changeable
+  final String isiBobotNaskah;
   final String penguasaanMateri;
-  final String kelengkapanReferensi;
+  final String presentasiPenampilan; // New field
+  final String hasilRancangBangun; // New field
   final Function(Map<String, dynamic>) onSave;
 
-  const DetailScreen({
-    super.key,
+  const DetailScreen2({
+    Key? key,
     required this.nim,
     required this.name,
     required this.tahunAkademik,
     required this.judulTA,
     required this.ruangan,
     required this.sebagai,
-    required this.kedisiplinanBimbingan,
-    required this.kreativitasPemecahanMasalah,
+    required this.isiBobotNaskah,
     required this.penguasaanMateri,
-    required this.kelengkapanReferensi,
+    required this.presentasiPenampilan, // New field
+    required this.hasilRancangBangun, // New field
     required this.onSave,
-  });
+  }) : super(key: key);
 
   @override
-  _DetailScreenState createState() => _DetailScreenState();
+  _DetailScreen2State createState() => _DetailScreen2State();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _DetailScreen2State extends State<DetailScreen2> {
   late TextEditingController nimController;
   late TextEditingController nameController;
   late TextEditingController tahunAkademikController;
   late TextEditingController judulTAController;
   late TextEditingController ruanganController;
-  late TextEditingController kedisiplinanBimbinganController;
-  late TextEditingController kreativitasPemecahanMasalahController;
+  late TextEditingController isiBobotNaskahController;
   late TextEditingController penguasaanMateriController;
-  late TextEditingController kelengkapanReferensiController;
-
-  // Dropdown options
-  final sebagaiOptions = [
-    'Pembimbing 1',
-    'Pembimbing 2',
-    'Penguji 1',
-    'Penguji 2'
-  ];
-
-  late String selectedSebagai;
+  late TextEditingController presentasiPenampilanController;
+  late TextEditingController hasilRancangBangunController;
 
   @override
   void initState() {
@@ -61,19 +51,14 @@ class _DetailScreenState extends State<DetailScreen> {
     tahunAkademikController = TextEditingController(text: widget.tahunAkademik);
     judulTAController = TextEditingController(text: widget.judulTA);
     ruanganController = TextEditingController(text: widget.ruangan);
-    kedisiplinanBimbinganController =
-        TextEditingController(text: widget.kedisiplinanBimbingan);
-    kreativitasPemecahanMasalahController =
-        TextEditingController(text: widget.kreativitasPemecahanMasalah);
+    isiBobotNaskahController =
+        TextEditingController(text: widget.isiBobotNaskah);
     penguasaanMateriController =
         TextEditingController(text: widget.penguasaanMateri);
-    kelengkapanReferensiController =
-        TextEditingController(text: widget.kelengkapanReferensi);
-
-    // Initialize dropdown selection
-    selectedSebagai = sebagaiOptions.contains(widget.sebagai)
-        ? widget.sebagai
-        : sebagaiOptions.first;
+    presentasiPenampilanController = TextEditingController(
+        text: widget.presentasiPenampilan); // Initialize with existing data
+    hasilRancangBangunController = TextEditingController(
+        text: widget.hasilRancangBangun); // Initialize with existing data
   }
 
   @override
@@ -83,10 +68,10 @@ class _DetailScreenState extends State<DetailScreen> {
     tahunAkademikController.dispose();
     judulTAController.dispose();
     ruanganController.dispose();
-    kedisiplinanBimbinganController.dispose();
-    kreativitasPemecahanMasalahController.dispose();
+    isiBobotNaskahController.dispose();
     penguasaanMateriController.dispose();
-    kelengkapanReferensiController.dispose();
+    presentasiPenampilanController.dispose();
+    hasilRancangBangunController.dispose();
     super.dispose();
   }
 
@@ -97,35 +82,35 @@ class _DetailScreenState extends State<DetailScreen> {
       'tahunAkademik': tahunAkademikController.text,
       'judulTA': judulTAController.text,
       'ruangan': ruanganController.text,
-      'sebagai': selectedSebagai,
-      'kedisiplinanBimbingan': kedisiplinanBimbinganController.text,
-      'kreativitasPemecahanMasalah': kreativitasPemecahanMasalahController.text,
+      'sebagai': widget.sebagai, // Use the fixed role
+      'isiBobotNaskah': isiBobotNaskahController.text,
       'penguasaanMateri': penguasaanMateriController.text,
-      'kelengkapanReferensi': kelengkapanReferensiController.text,
+      'presentasiPenampilan': presentasiPenampilanController.text,
+      'hasilRancangBangun': hasilRancangBangunController.text,
     };
 
     widget.onSave(updatedData);
     Navigator.pop(context);
   }
 
+  InputDecoration readOnlyDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.grey[200],
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    InputDecoration readOnlyDecoration(String label) {
-      return InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.grey[200],
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Input Nilai Ujian Sidang Tugas Akhir'),
@@ -179,47 +164,38 @@ class _DetailScreenState extends State<DetailScreen> {
                 readOnly: true,
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: selectedSebagai,
-                items: sebagaiOptions.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: null, // Disable dropdown selection
+              // Replace DropdownButtonFormField with TextFormField for the fixed role
+              TextFormField(
+                controller: TextEditingController(text: widget.sebagai),
                 decoration: readOnlyDecoration('Sebagai'),
+                readOnly: true, // Make this field read-only
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: kedisiplinanBimbinganController,
-                decoration: const InputDecoration(
-                  labelText: 'Kedisiplinan dalam Bimbingan',
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: kreativitasPemecahanMasalahController,
-                decoration: const InputDecoration(
-                  labelText: 'Kreativitas Pemecahan Masalah',
-                ),
+                controller: isiBobotNaskahController,
+                decoration:
+                    const InputDecoration(labelText: 'Isi Dan Bobot Naskah'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: penguasaanMateriController,
-                decoration: const InputDecoration(
-                  labelText: 'Penguasaan Materi',
-                ),
+                decoration:
+                    const InputDecoration(labelText: 'Penguasaan Materi'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: kelengkapanReferensiController,
+                controller: presentasiPenampilanController,
                 decoration: const InputDecoration(
-                  labelText: 'Kelengkapan dan Referensi',
-                ),
+                    labelText: 'Presentasi dan Penampilan'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: hasilRancangBangunController,
+                decoration:
+                    const InputDecoration(labelText: 'Hasil Rancang Bangun'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 32),

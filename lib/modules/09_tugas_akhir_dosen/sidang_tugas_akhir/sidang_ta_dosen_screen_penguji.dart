@@ -1,16 +1,15 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'detail_screen.dart';
+import 'detail_screen2.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen2 extends StatefulWidget {
+  const HomeScreen2({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeScreen2State createState() => _HomeScreen2State();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 2; // Default to the "Menguji" section
+class _HomeScreen2State extends State<HomeScreen2> {
+  int _selectedIndex = 2;
 
   final List<Map<String, dynamic>> dataSidang = [
     {
@@ -20,9 +19,11 @@ class _HomeScreenState extends State<HomeScreen> {
       'judulTA': 'Cara Mengirim Januar Tanpa Rusak Di Perjalanan',
       'status': 'Belum Terjadwal',
       'ruangan': '2',
-      'sebagai': 'Pembimbing 1',
+      'sebagai': 'Penguji 2',
       'isiBobotNaskah': '100',
       'penguasaanMateri': '100',
+      'presentasiPenampilan': '90', // Add this field
+      'hasilRancangBangun': '85', // Add this field
       'isTerjadwal': false,
     },
     {
@@ -35,6 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'sebagai': 'Penguji 1',
       'isiBobotNaskah': '90',
       'penguasaanMateri': '95',
+      'presentasiPenampilan': '92', // Add this field
+      'hasilRancangBangun': '88', // Add this field
       'isTerjadwal': true,
     },
     {
@@ -47,14 +50,16 @@ class _HomeScreenState extends State<HomeScreen> {
       'sebagai': 'Penguji 2',
       'isiBobotNaskah': '85',
       'penguasaanMateri': '80',
+      'presentasiPenampilan': '75', // Add this field
+      'hasilRancangBangun': '70', // Add this field
       'isTerjadwal': false,
     },
-    // Add more entries if needed for testing
   ];
+
 
   void _updateEntry(int index, Map<String, dynamic> updatedEntry) {
     setState(() {
-      dataSidang[index] = updatedEntry;
+      dataSidang[index] = updatedEntry; // Update the entry in dataSidang
     });
   }
 
@@ -181,50 +186,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: screenHeight * 0.005),
-                                    child: Text(
-                                      'Status: ${sidang['status']}',
-                                      style: TextStyle(
-                                          fontSize: fontSizeSubtitle * 0.9),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          color: sidang['isTerjadwal']
+                                              ? Colors.green
+                                              : Colors.yellow,
+                                          size: fontSizeSubtitle * 0.9,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          sidang['status'],
+                                          style: TextStyle(
+                                              fontSize: fontSizeSubtitle * 0.9),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.circle,
-                                        size: screenWidth * 0.025,
-                                        color: sidang['isTerjadwal']
-                                            ? Colors.green
-                                            : Colors.orange,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        sidang['isTerjadwal']
-                                            ? 'Sudah Terjadwal'
-                                            : 'Belum Terjadwal',
-                                        style: TextStyle(
-                                            fontSize: fontSizeSubtitle * 0.7),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.circle,
-                                        size: screenWidth * 0.025,
-                                        color: sidang['isTerjadwal']
-                                            ? Colors.green
-                                            : Colors.teal,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        sidang['isTerjadwal']
-                                            ? 'Sudah Melakukan Sidang'
-                                            : 'Belum Melakukan Sidang',
-                                        style: TextStyle(
-                                            fontSize: fontSizeSubtitle * 0.7),
-                                      ),
-                                    ],
                                   ),
                                 ],
                               ),
@@ -234,10 +212,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       const Color.fromRGBO(50, 111, 233, 1),
                                 ),
                                 onPressed: () async {
-                                  await Navigator.push(
+                                  final updatedEntry = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => DetailScreen(
+                                      builder: (context) => DetailScreen2(
                                         nim: sidang['nim'],
                                         name: sidang['name'],
                                         tahunAkademik: sidang['tahunAkademik'],
@@ -248,18 +226,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                             sidang['isiBobotNaskah'],
                                         penguasaanMateri:
                                             sidang['penguasaanMateri'],
-                                        isTerjadwal: sidang['isTerjadwal'],
+                                        presentasiPenampilan: sidang[
+                                            'presentasiPenampilan'], // Pass this field
+                                        hasilRancangBangun: sidang[
+                                            'hasilRancangBangun'], // Pass this field
                                         onSave: (updatedEntry) =>
                                             _updateEntry(index, updatedEntry),
                                       ),
                                     ),
                                   );
+                                  if (updatedEntry != null) {
+                                    _updateEntry(index,
+                                        updatedEntry); // Update the entry with new data
+                                  }
                                 },
                                 child: Text(
                                   'Lihat',
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: fontSizeSubtitle * 0.9),
+                                    color: Colors.white,
+                                    fontSize: fontSizeSubtitle * 0.9,
+                                  ),
                                 ),
                               ),
                             ),
