@@ -1,22 +1,8 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last, prefer_const_constructors_in_immutables, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SidangScreen(),
-    );
-  }
-}
+import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/revisi_tugas_akhir/daftar_revisi.dart';
 
 class SidangScreen extends StatefulWidget {
+  const SidangScreen({super.key});
   @override
   _SidangScreenState createState() => _SidangScreenState();
 }
@@ -45,13 +31,13 @@ class _SidangScreenState extends State<SidangScreen> {
                     },
                     elevation: 2.0,
                     fillColor: Colors.indigo[900],
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
                     child: Icon(
                       Icons.arrow_back,
                       size: 15.0,
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
                 Spacer(),
@@ -60,8 +46,8 @@ class _SidangScreenState extends State<SidangScreen> {
                     SizedBox(width: 30),
                     Text(
                       'Adnan Bima Adhi N',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(
@@ -101,13 +87,21 @@ class _SidangScreenState extends State<SidangScreen> {
                       SizedBox(height: 10),
                       CustomTextField(label: 'Pembimbing 2', isEditable: false),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Penguji', placeholderText: 'Belum Di Plotting'),
+                      CustomTextField(
+                          label: 'Penguji',
+                          placeholderText: 'Belum Di Plotting'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Sekretaris', placeholderText: 'Belum Di Plotting'),
+                      CustomTextField(
+                          label: 'Sekretaris',
+                          placeholderText: 'Belum Di Plotting'),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Tahun Akademik', isEditable: false),
+                      CustomTextField(
+                          label: 'Tahun Akademik', isEditable: false),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Judul Tugas Akhir', maxLines: 2, isEditable: false),
+                      CustomTextField(
+                          label: 'Judul Tugas Akhir',
+                          maxLines: 2,
+                          isEditable: false),
                     ],
                   ),
                 ),
@@ -128,11 +122,34 @@ class _SidangScreenState extends State<SidangScreen> {
                       SizedBox(height: 10),
                       CustomTextField(label: 'Sesi', isEditable: false),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'Status Sidang', placeholderText: 'Belum melaksanakan sidang'),
+                      CustomTextField(
+                          label: 'Status Sidang',
+                          placeholderText: 'Belum melaksanakan sidang'),
                     ],
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DaftarRevisiScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: Text(
+                  'Revisi',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
             ),
           ],
         ),
@@ -145,7 +162,7 @@ class CustomExpansionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  CustomExpansionCard({required this.title, required this.children});
+  const CustomExpansionCard({super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -153,23 +170,19 @@ class CustomExpansionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
       ),
-      child: ExpansionTile(
-        leading: Icon(Icons.menu, size: 30, color: Colors.black),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      child: Theme(
+        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          leading: Icon(Icons.menu, size: 24, color: Colors.black),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          childrenPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          trailing: Icon(Icons.arrow_drop_down, size: 24, color: Colors.black),
+          children: children,
         ),
-        children: children,
-        trailing: Icon(Icons.arrow_drop_down, size: 30, color: Colors.black),
       ),
     );
   }
@@ -181,19 +194,36 @@ class CustomTextField extends StatelessWidget {
   final String? placeholderText;
   final bool isEditable;
 
-  CustomTextField({required this.label, this.maxLines = 1, this.placeholderText, this.isEditable = true});
+  const CustomTextField({super.key, 
+    required this.label,
+    this.maxLines = 1,
+    this.placeholderText,
+    this.isEditable = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     bool isPlaceholder = placeholderText != null;
-    return TextField(
-      maxLines: maxLines,
-      readOnly: !isEditable || isPlaceholder,
-      controller: isPlaceholder ? TextEditingController(text: placeholderText) : null,
-      style: isPlaceholder ? TextStyle(fontStyle: FontStyle.italic, color: Colors.red) : null,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.0), // Adjust spacing between fields
+      child: TextField(
+        maxLines: maxLines,
+        readOnly: true,
+        controller:
+            isPlaceholder ? TextEditingController(text: placeholderText) : null,
+        style: isPlaceholder
+            ? TextStyle(fontStyle: FontStyle.italic, color: Colors.red)
+            : TextStyle(color: Colors.black87),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey),
+          filled: true,
+          fillColor: Colors.grey[200], // Background color to match the image
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide.none, // Remove border
+          ),
+        ),
       ),
     );
   }
