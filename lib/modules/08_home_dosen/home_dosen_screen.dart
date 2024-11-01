@@ -27,7 +27,7 @@ class _JadwalSidangPageState extends State<JadwalSidangPage> {
   int _selectedIndex = 0;
 
   final List<Map<String, String>> jadwalSidang = [
-    {'hari': 'Rabu', 'tanggal': '2 Oktober 2024'},
+    {'hari': 'wed', 'tanggal': '2 Oktober 2024'},
     {'hari': 'Kamis', 'tanggal': '3 Oktober 2024'},
     {'hari': 'Jum\'at', 'tanggal': '4 Oktober 2024'},
     {'hari': 'Senin', 'tanggal': '7 Oktober 2024'},
