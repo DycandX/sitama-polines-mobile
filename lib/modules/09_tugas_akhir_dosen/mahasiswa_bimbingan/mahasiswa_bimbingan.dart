@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 
 // Model untuk mewakili data mahasiswa
 class Mahasiswa {
@@ -24,7 +25,6 @@ class MahasiswaBimbingan extends StatefulWidget {
 
 int selectedIndex = 1;
 // Function to handle navigation item selection
-  
 
 class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
   // Daftar mahasiswa (data dummy)
@@ -55,8 +55,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: 
-      Stack(
+      body: Stack(
         children: [
           // Konten utama (List Mahasiswa dan lainnya)
           Padding(
@@ -90,7 +89,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                     children: [
                       // Judul expanded atas
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(25, 30, 0, 0),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -105,97 +104,115 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                         ),
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: mahasiswas.length,
-                          itemBuilder: (context, index) {
-                            final mahasiswa = mahasiswas[index];
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                              child: Card(
-                                margin: const EdgeInsets.symmetric(vertical: 7),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                color: const Color.fromARGB(255, 230, 228, 228),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom:
+                                  90), // Add bottom padding to prevent overlap
+                          child: ListView.builder(
+                            itemCount: mahasiswas.length,
+                            itemBuilder: (context, index) {
+                              final mahasiswa = mahasiswas[index];
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: Card(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 7),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  color:
+                                      const Color.fromARGB(255, 230, 228, 228),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "NIM    : ${mahasiswa.nim}",
+                                                    style:
+                                                        TextStyle(fontSize: 14),
+                                                  ),
+                                                  Text(
+                                                    "Nama : ${mahasiswa.nama}",
+                                                    style:
+                                                        TextStyle(fontSize: 14),
+                                                  ),
+                                                  Text(
+                                                    "Judul  : ${mahasiswa.judulTugas}",
+                                                    style:
+                                                        TextStyle(fontSize: 14),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DaftarBimbingan()));
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0),
+                                                ),
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 50, 111, 233),
+                                              ),
+                                              child: Text(
+                                                "Lihat",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
                                               children: [
-                                                Text(
-                                                  "NIM    : ${mahasiswa.nim}",
-                                                  style: TextStyle(fontSize: 14),
+                                                Icon(
+                                                  Icons.circle,
+                                                  color: mahasiswa.progress == 8
+                                                      ? Colors.green
+                                                      : Colors.yellow,
+                                                  size: 18,
                                                 ),
+                                                SizedBox(width: 5),
                                                 Text(
-                                                  "Nama : ${mahasiswa.nama}",
-                                                  style: TextStyle(fontSize: 14),
-                                                ),
-                                                Text(
-                                                  "Judul  : ${mahasiswa.judulTugas}",
-                                                  style: TextStyle(fontSize: 14),
+                                                  '${mahasiswa.progress}/8',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              // Define the action for "Lihat" button here
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                              backgroundColor: const Color.fromARGB(
-                                                  255, 50, 111, 233),
-                                            ),
-                                            child: Text(
-                                              "Lihat",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.circle,
-                                                color: mahasiswa.progress == 8
-                                                    ? Colors.green
-                                                    : Colors.yellow,
-                                                size: 18,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                '${mahasiswa.progress}/8',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -204,7 +221,6 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
               ],
             ),
           ),
-
           // Floating navigation bar
           Positioned(
             left: 20,
@@ -230,7 +246,8 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
                   currentIndex: selectedIndex, // Set index of selected item
-                  selectedItemColor: Color.fromARGB(255, 55, 66, 230), // Selected icon color
+                  selectedItemColor:
+                      Color.fromARGB(255, 55, 66, 230), // Selected icon color
                   unselectedItemColor: Colors.grey, // Unselected icon color
                   onTap: (index) {
                     setState(() {

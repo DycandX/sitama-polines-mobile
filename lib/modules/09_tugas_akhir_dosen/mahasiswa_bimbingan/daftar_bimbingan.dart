@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/dataMhs_ta.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 
 class DaftarBimbingan extends StatefulWidget {
   const DaftarBimbingan({super.key});
@@ -51,7 +53,13 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                       color: const Color.fromRGBO(40, 42, 116, 1),
                     ),
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MahasiswaBimbingan()),
+                        );
+                      },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
@@ -131,7 +139,13 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                         ],
                       ),
                       trailing: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DatamhsTa()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(

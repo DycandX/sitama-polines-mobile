@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 
 class DatamhsTa extends StatefulWidget {
   const DatamhsTa({super.key});
@@ -28,7 +29,13 @@ class _DatamhsTaState extends State<DatamhsTa> {
                       color: const Color.fromRGBO(40, 42, 116, 1),
                     ),
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DaftarBimbingan()),
+                        );
+                      },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
@@ -57,20 +64,22 @@ class _DatamhsTaState extends State<DatamhsTa> {
               ],
             ),
             // Title Text
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-              child: Text(
-                "Data Mahasiswa Bimbingan Tugas Akhir",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 10, 10),
+                child: Text(
+                  "Data Mahasiswa Bimbingan Tugas Akhir",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             // Student Info Card
             SizedBox(
               child: Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(15,0,0,0),
                   child: Card(
-                    elevation: 4,
+                    elevation: 2,
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -139,7 +148,86 @@ class _DatamhsTaState extends State<DatamhsTa> {
                                 width: 130,
                                 height: 40,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          backgroundColor: Color.fromRGBO(
+                                              40,
+                                              42,
+                                              116,
+                                              1), // Custom background color
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "Apakah Anda Yakin Ingin Menyetujui Bimbingan?",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors
+                                                      .white, // Text color
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              SizedBox(height: 20),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  // Cancel Button
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(); // Close the dialog
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      shape: CircleBorder(),
+                                                      padding:
+                                                          EdgeInsets.all(16),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  // Confirm Button
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(); // Close the dialog
+                                                      // Add your confirmation logic here
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                      shape: CircleBorder(),
+                                                      padding:
+                                                          EdgeInsets.all(16),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
                                     shape: RoundedRectangleBorder(
