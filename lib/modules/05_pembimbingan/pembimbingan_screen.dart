@@ -16,14 +16,52 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pembimbingan'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isDataPlotted
             ? Column(
                 children: [
+                  // Header Row with Back Button, Name, and Avatar
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            color: const Color.fromRGBO(40, 42, 116, 1),
+                          ),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.arrow_back, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                            child: Text(
+                              'XAVIERA PUTRI S.T, M.Kom.',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundImage:
+                                AssetImage('assets/images/xaviera.png'),
+                            backgroundColor: Colors.blue,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   // Pembimbing 1 Box
                   PembimbingBox(
                     pembimbing: pembimbing1,
@@ -32,7 +70,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                StatusBimbinganScreen(pembimbing: pembimbing1)),
+                                DaftarBimbinganScreen(pembimbing: pembimbing1)),
                       );
                     },
                   ),
@@ -45,7 +83,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                StatusBimbinganScreen(pembimbing: pembimbing2)),
+                                DaftarBimbinganScreen(pembimbing: pembimbing2)),
                       );
                     },
                   ),
