@@ -3,7 +3,6 @@ import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilka
 import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
 import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/sidang_tugas_akhir/sidang_ta_screen.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 
 void main() {
   runApp(MyApp());
