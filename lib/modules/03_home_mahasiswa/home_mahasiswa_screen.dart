@@ -137,13 +137,37 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          buildMenuItem('Dashboard Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Dashboard Tugas\nAkhir',
+                            () {
+                              // Navigasi ke Dashboard Tugas Akhir
+                              print('Navigasi ke Dashboard Tugas Akhir');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Bimbingan'),
+                          buildMenuItem(
+                            'Bimbingan',
+                            () {
+                              // Navigasi ke Bimbingan
+                              print('Navigasi ke Bimbingan');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Daftar Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Daftar Tugas\nAkhir',
+                            () {
+                              // Navigasi ke Daftar Tugas Akhir
+                              print('Navigasi ke Daftar Tugas Akhir');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Sidang Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Sidang Tugas\nAkhir',
+                            () {
+                              // Navigasi ke Sidang Tugas Akhir
+                              print('Navigasi ke Sidang Tugas Akhir');
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -172,7 +196,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
     );
   }
 
-  Widget buildMenuItem(String title) {
+  Widget buildMenuItem(String title, VoidCallback onPressed) {
     return Row(
       children: [
         Expanded(
@@ -211,9 +235,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
           child: Align(
             alignment: Alignment.center, // Menempatkan tombol di kanan
             child: TextButton(
-              onPressed: () {
-                // Add your navigation logic here
-              },
+              onPressed: onPressed, // Panggil callback yang sesuai
               child: Text('Lihat'),
             ),
           ),

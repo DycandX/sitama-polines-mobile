@@ -12,9 +12,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //home: JadwalSidangPage(),
       home: homeMahasiswaScreen(),
+      //home: homeMahasiswaScreen(),
       //home: WelcomePage(),
+      //home: JadwalSidangPage(),
     );
   }
 }
