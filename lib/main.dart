@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/01_launch/welcome_page.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 //import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 //import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
 //import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
@@ -26,11 +28,11 @@ class MyApp extends StatelessWidget {
       
       //home: MahasiswaBimbingan(),
       //home: PembimbinganScreen(),
-      home: WelcomePage(),
+      //home: WelcomePage(),
       //home: SidangTaScreen(),
       //home: DaftarTaScreen(),
       //home: PembimbinganScreen(),
-      //home: JadwalSidangPage(),
+      home: JadwalSidangPage(),
       //home: homeMahasiswaScreen(),
       //home: DashboardScreen(),
       //home: WelcomePage(),

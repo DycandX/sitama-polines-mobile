@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
+import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
+import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
+import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/sidang_tugas_akhir/sidang_ta_screen.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 
 void main() {
   runApp(MyApp());
@@ -85,7 +90,8 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 14,
-                                fontWeight: FontWeight.w500, // Poppins Medium 14
+                                fontWeight:
+                                    FontWeight.w500, // Poppins Medium 14
                                 color: Colors.white,
                               ),
                               textAlign: TextAlign.center,
@@ -94,7 +100,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                         ),
                         Container(
                           height: 40, // Tinggi garis vertikal
-                          width: 1,   // Lebar garis vertikal
+                          width: 1, // Lebar garis vertikal
                           color: Colors.white54, // Warna garis vertikal
                         ),
                         Column(
@@ -109,7 +115,8 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 14,
-                                fontWeight: FontWeight.w500, // Poppins Medium 14
+                                fontWeight:
+                                    FontWeight.w500, // Poppins Medium 14
                                 color: Colors.white,
                               ),
                               textAlign: TextAlign.center,
@@ -125,10 +132,14 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
               // Single Box for all items
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 0, right: 0, bottom: 0), // Menghilangkan padding kiri, kanan, bawah
+                  padding: EdgeInsets.only(
+                      left: 0,
+                      right: 0,
+                      bottom: 0), // Menghilangkan padding kiri, kanan, bawah
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(10)),
                     ),
                     margin: EdgeInsets.zero, // Fit ke layar tanpa ruang ekstra
                     elevation: 24,
@@ -137,13 +148,62 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          buildMenuItem('Dashboard Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Dashboard Tugas\nAkhir',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DashboardScreen(),
+                                ),
+                              );
+
+                              // Navig asi ke Dashboard Tugas Akhir
+                              print('Navigasi ke Dashboard Tugas Akhir');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Bimbingan'),
+                          buildMenuItem(
+                            'Bimbingan',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PembimbinganScreen(),
+                                ),
+                              );
+                              // Navigasi ke Bimbingan
+                              print('Navigasi ke Bimbingan');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Daftar Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Daftar Tugas\nAkhir',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DaftarTaScreen(),
+                                ),
+                              );
+                              // Navigasi ke Daftar Tugas Akhir
+                              print('Navigasi ke Daftar Tugas Akhir');
+                            },
+                          ),
                           SizedBox(height: 16),
-                          buildMenuItem('Sidang Tugas\nAkhir'),
+                          buildMenuItem(
+                            'Sidang Tugas\nAkhir',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SidangTaScreen(),
+                                ),
+                              );
+                              // Navigasi ke Sidang Tugas Akhir
+                              print('Navigasi ke Sidang Tugas Akhir');
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -172,7 +232,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
     );
   }
 
-  Widget buildMenuItem(String title) {
+  Widget buildMenuItem(String title, VoidCallback onPressed) {
     return Row(
       children: [
         Expanded(
@@ -184,10 +244,12 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                 height: 62, // Tinggi container (rectangle)
                 decoration: BoxDecoration(
                   color: Color(0xFF0068FF), // Background color #0068FF
-                  borderRadius: BorderRadius.circular(12), // Sisi rounded dengan radius 12
+                  borderRadius: BorderRadius.circular(
+                      12), // Sisi rounded dengan radius 12
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0), // Padding untuk memberi ruang di sekitar gambar
+                  padding: const EdgeInsets.all(
+                      8.0), // Padding untuk memberi ruang di sekitar gambar
                   child: Image.asset(
                     'images/icon.png', // Gambar icon
                     width: 32, // Ukuran gambar tetap
@@ -203,7 +265,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
         // Garis vertikal di tengah
         Container(
           height: 32, // Tinggi garis vertikal
-          width: 1,   // Lebar garis vertikal
+          width: 1, // Lebar garis vertikal
           color: Colors.blue, // Warna garis vertikal
         ),
         // Tombol "Lihat"
@@ -211,9 +273,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
           child: Align(
             alignment: Alignment.center, // Menempatkan tombol di kanan
             child: TextButton(
-              onPressed: () {
-                // Add your navigation logic here
-              },
+              onPressed: onPressed, // Panggil callback yang sesuai
               child: Text('Lihat'),
             ),
           ),
@@ -247,7 +307,8 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                         color: Colors.red, // Background warna merah
                         shape: BoxShape.circle, // Bentuk bulat
                       ),
-                      padding: EdgeInsets.all(12), // Padding untuk memberi ruang di sekitar gambar
+                      padding: EdgeInsets.all(
+                          12), // Padding untuk memberi ruang di sekitar gambar
                       child: Image.asset(
                         'images/no.png', // Gambar icon silang
                         width: 24,
@@ -259,14 +320,16 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                   GestureDetector(
                     onTap: () {
                       // Tambahkan logika untuk melakukan log out di sini
-                      Navigator.of(context).pop(); // Menutup dialog setelah log out
+                      Navigator.of(context)
+                          .pop(); // Menutup dialog setelah log out
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.green, // Background warna hijau
                         shape: BoxShape.circle, // Bentuk bulat
                       ),
-                      padding: EdgeInsets.all(12), // Padding untuk memberi ruang di sekitar gambar
+                      padding: EdgeInsets.all(
+                          12), // Padding untuk memberi ruang di sekitar gambar
                       child: Image.asset(
                         'images/yes.png', // Gambar icon centang
                         width: 24,

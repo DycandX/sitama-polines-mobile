@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,12 +28,20 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     // Check if entered credentials match the predefined credentials
-    if (email == "dewa@gmail.com" && password == "12345678") {
+    // if (email == "mahasiswa@gmail.com" && password == "12345678") {
+    //   // Navigate to homeMahasiswaScreen if credentials are correct
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => homeMahasiswaScreen(),
+    //     ),
+    //   );
+    if (email == "dosen@gmail.com" && password == "12345678") {
       // Navigate to homeMahasiswaScreen if credentials are correct
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => homeMahasiswaScreen(),
+          builder: (context) => JadwalSidangPage(),
         ),
       );
     } else {
