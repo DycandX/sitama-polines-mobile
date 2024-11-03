@@ -168,7 +168,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PembimbinganScreen(),
+                                  builder: (context) => PembimbinganScreen(pembimbing: '',),
                                 ),
                               );
                               // Navigasi ke Bimbingan

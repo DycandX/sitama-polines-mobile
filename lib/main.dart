@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/01_launch/welcome_page.dart';
+import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 
 
 
@@ -13,10 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       
+      home: PembimbinganScreen(pembimbing: '',),
       //home: HomeScreen(),
       //home: MahasiswaBimbingan(),
       //home: PembimbinganScreen(),
-      home: WelcomePage(),
+      //home: WelcomePage(),
       //home: SidangTaScreen(),
       //home: DaftarTaScreen(),
       //home: PembimbinganScreen(),

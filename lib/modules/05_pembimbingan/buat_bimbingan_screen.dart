@@ -1,228 +1,250 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:pbl_sitama/modules/05_pembimbingan/daftar_bimbingan.dart';
 
 class BuatBimbinganScreen extends StatefulWidget {
+  final Function(String title, String description, String? file, String? dosen)
+      onSave;
+
+  const BuatBimbinganScreen({super.key, required this.onSave});
+
   @override
-  _BuatBimbinganScreenState createState() => _BuatBimbinganScreenState();
+  State<BuatBimbinganScreen> createState() => _BuatBimbinganScreenState();
 }
 
 class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
-  String? selectedFileName;
-  String? selectedPembimbing;
+  final _formKey = GlobalKey<FormState>();
+  String? selectedFile;
   String title = '';
-  String schedule = '';
   String description = '';
+  String? selectedDosen;
 
-  Future<void> pickFile() async {
+  // List of available dosen (lecturers)
+  final List<String> dosenList = ['Azka', 'Zulvikar', 'Dewa'];
+  
+  get pembimbing => null;
+
+  Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
+
     if (result != null) {
       setState(() {
-        selectedFileName = result.files.single.name;
+        selectedFile = result.files.single.name;
       });
+    }
+  }
+
+  void _saveForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      widget.onSave(title, description, selectedFile, selectedDosen);
+      Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromRGBO(40, 42, 116, 1),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                  ),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.indigo[900],
+            height: 20,
+            child: SafeArea(child: Container()),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(
-                          'Adnan Bima Adhi N',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back,
+                                color: Colors.blue),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundImage: AssetImage('assets/images/xaviera.png'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 3,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Buat Bimbingan',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Judul Bimbingan',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        onChanged: (value) => title = value,
-                      ),
-                      SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          labelText: 'Pembimbing',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        value: selectedPembimbing,
-                        items: [
-                          DropdownMenuItem(
-                            value: 'Pembimbing 1',
-                            child: Text('Pembimbing 1'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Pembimbing 2',
-                            child: Text('Pembimbing 2'),
+                          const SizedBox(width: 220),
+                          const Text(
+                            'Adnan Bima Adhi N',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
                           ),
                         ],
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPembimbing = value;
-                          });
-                        },
                       ),
-                      SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Jadwal Bimbingan',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
+                      CircleAvatar(
+                        backgroundColor: Colors.grey[200],
+                        child: const Icon(Icons.person, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Buat Revisi',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        onChanged: (value) => schedule = value,
-                      ),
-                      SizedBox(height: 10),
-                      GestureDetector(
-                        onTap: pickFile,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[400]!),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Judul Revisi',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide.none,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                selectedFileName ?? 'Pilih File Lampiran',
-                                style: TextStyle(
-                                  color: selectedFileName == null
-                                      ? Colors.grey
-                                      : Colors.black,
-                                ),
-                              ),
-                              Icon(Icons.attach_file, color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          labelText: 'Deskripsi',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        onChanged: (value) => description = value,
-                      ),
-                      SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(
-                              context,
-                              {
-                                'title': title,
-                                'pembimbing': selectedPembimbing,
-                                'schedule': schedule,
-                                'file': selectedFileName,
-                                'description': description,
-                              },
-                            );
+                          validator: (value) {
+                            return value == null || value.isEmpty
+                                ? 'Field ini harus diisi'
+                                : null;
                           },
-                          child: Text('Simpan', style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          onSaved: (value) => title = value!,
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Dropdown for selecting Dosen
+                        DropdownButtonFormField<String>(
+                          value: selectedDosen,
+                          decoration: InputDecoration(
+                            labelText: 'Pilih Dosen',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          items: dosenList.map((dosen) {
+                            return DropdownMenuItem(
+                              value: dosen,
+                              child: Text(dosen),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDosen = value;
+                            });
+                          },
+                          validator: (value) {
+                            return value == null
+                                ? 'Silahkan pilih dosen'
+                                : null;
+                          },
+                        ),
+
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: _pickFile,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16.0, horizontal: 12.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedFile ?? 'File Lampiran',
+                                  style: TextStyle(
+                                    color: selectedFile != null
+                                        ? Colors.black87
+                                        : Colors.grey,
+                                    fontStyle: selectedFile == null
+                                        ? FontStyle.italic
+                                        : FontStyle.normal,
+                                  ),
+                                ),
+                                const Icon(Icons.upload_file,
+                                    color: Colors.grey),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            labelText: 'Deskripsi',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          validator: (value) {
+                            return value == null || value.isEmpty
+                                ? 'Field ini harus diisi'
+                                : null;
+                          },
+                          onSaved: (value) => description = value!,
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _saveForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromRGBO(27, 175, 27, 1),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'Simpan',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
