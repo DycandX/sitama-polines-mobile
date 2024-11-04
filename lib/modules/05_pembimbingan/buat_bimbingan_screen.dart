@@ -90,7 +90,7 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Buat Revisi',
+                    'Buat Bimbingan',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
                       children: [
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: 'Judul Revisi',
+                            labelText: 'Judul Bimbingan',
                             filled: true,
                             fillColor: Colors.grey[200],
                             border: OutlineInputBorder(
@@ -138,7 +138,7 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
                         DropdownButtonFormField<String>(
                           value: selectedDosen,
                           decoration: InputDecoration(
-                            labelText: 'Pilih Dosen',
+                            labelText: 'Pilih Pembimbing',
                             filled: true,
                             fillColor: Colors.grey[200],
                             border: OutlineInputBorder(

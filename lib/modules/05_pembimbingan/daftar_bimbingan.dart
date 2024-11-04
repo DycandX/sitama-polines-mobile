@@ -85,7 +85,7 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
                 const SizedBox(height: 10),
                 // Main Form Container
                 revisiList.isEmpty
-                    ? const Text('Tidak ada revisi yang dibuat.')
+                    ? const Text('Belum ada bimbingan yang dibuat.')
                     : ListView.builder(
                         shrinkWrap: true,
                         itemCount: revisiList.length,

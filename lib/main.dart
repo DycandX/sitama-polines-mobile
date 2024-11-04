@@ -21,11 +21,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       
+      //home: JadwalSidangPage(),
+      home: WelcomePage(),
       // home: PembimbinganScreen(pembimbing: '',),
-      // home: HomeScreen(),
-      home: MahasiswaBimbingan(),
+      //home: HomeScreen(),
+      // home: MahasiswaBimbingan(),
       // home: PembimbinganScreen(),
-      //home: WelcomePage(),
+      // home: WelcomePage(),
       // home: SidangTaScreen(),
       // home: PembimbinganScreen(),
       // home: JadwalSidangPage(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
 
@@ -48,12 +49,12 @@ class _JadwalSidangPageState extends State<JadwalSidangPage> {
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
         break;
-      // case 3:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => ProfilePage()),
-      //   );
-      //   break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
+        break;
     }
   }
 

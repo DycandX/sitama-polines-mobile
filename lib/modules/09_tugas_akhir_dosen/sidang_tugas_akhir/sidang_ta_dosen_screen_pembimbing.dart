@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'detail_screen.dart';
 
@@ -36,15 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
         break;
-      // case 3:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => ProfilePage()),
-      //   );
-      //   break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
+        break;
     }
   }
-
 
   final List<Map<String, dynamic>> dataSidang = [
     {
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'name': 'Godilam',
       'tahunAkademik': '2024',
       'judulTA': 'Cara Mengirim Januar Tanpa Rusak Di Perjalanan',
-      'status': 'Belum Terjadwal',
+      'status': 'Belum Melakukan Sidang',
       'ruangan': '2',
       'sebagai': 'Pembimbing 1',
       'kedisiplinanBimbingan': '80',
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'name': 'Ridwan Lewandowski',
       'tahunAkademik': '2024',
       'judulTA': 'Pendapat Utama Tentang Mengonsumsi Januar',
-      'status': 'Sudah Terjadwal',
+      'status': 'Sudah Melakukan Sidang',
       'ruangan': '3',
       'sebagai': 'Pembimbing 2',
       'kedisiplinanBimbingan': '75',
@@ -80,14 +80,14 @@ class _HomeScreenState extends State<HomeScreen> {
       'name': 'Kayes',
       'tahunAkademik': '2024',
       'judulTA': 'Cara Menghilangkan Januar Yang Membandel',
-      'status': 'Sudah Terjadwal',
+      'status': 'Sudah Melakukan Sidang',
       'ruangan': '1',
-      'sebagai': 'Pembimbing 1',
+      'sebagai': 'Penguji 1',
       'kedisiplinanBimbingan': '88',
       'kreativitasPemecahanMasalah': '80',
       'penguasaanMateri': '78',
       'kelengkapanReferensi': '85',
-      'isTerjadwal': false,
+      'isTerjadwal': true,
     },
   ];
 
@@ -96,7 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
       dataSidang[index] = updatedEntry;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: 100), // Space for BottomNavigationBar
+            padding:
+                EdgeInsets.only(bottom: 100), // Space for BottomNavigationBar
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.all(padding),
@@ -134,7 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 10),
                       CircleAvatar(
                         radius: screenWidth * 0.045,
-                        backgroundImage: AssetImage('assets/images/welcome_image.png'),
+                        backgroundImage:
+                            AssetImage('assets/images/welcome_image.png'),
                       ),
                     ],
                   ),
@@ -168,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           final sidang = dataSidang[index];
                           return Card(
                             color: const Color.fromRGBO(221, 221, 221, 1),
-                            margin: EdgeInsets.symmetric(vertical: padding * 0.3),
+                            margin:
+                                EdgeInsets.symmetric(vertical: padding * 0.3),
                             child: ListTile(
                               title: Text(
                                 sidang['name'],
@@ -181,41 +183,51 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.only(top: screenHeight * 0.005),
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.005),
                                     child: Text(
                                       'Nama: ${sidang['name']}',
-                                      style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                      style: TextStyle(
+                                          fontSize: fontSizeSubtitle * 0.9),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: screenHeight * 0.005),
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.005),
                                     child: Text(
                                       'NIM: ${sidang['nim']}',
-                                      style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                      style: TextStyle(
+                                          fontSize: fontSizeSubtitle * 0.9),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: screenHeight * 0.005),
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.005),
                                     child: Text(
                                       'Judul: ${sidang['judulTA']}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                      style: TextStyle(
+                                          fontSize: fontSizeSubtitle * 0.9),
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: screenHeight * 0.005),
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.005),
                                     child: Row(
                                       children: [
                                         Icon(
                                           Icons.circle,
-                                          color: sidang['isTerjadwal'] ? Colors.green : Colors.yellow,
+                                          color: sidang['isTerjadwal']
+                                              ? Colors.green
+                                              : Colors.yellow,
                                           size: fontSizeSubtitle * 0.9,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
                                           sidang['status'],
-                                          style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                          style: TextStyle(
+                                              fontSize: fontSizeSubtitle * 0.9),
                                         ),
                                       ],
                                     ),
@@ -224,7 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               trailing: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromRGBO(50, 111, 233, 1),
+                                  backgroundColor:
+                                      const Color.fromRGBO(50, 111, 233, 1),
                                 ),
                                 onPressed: () async {
                                   await Navigator.push(
@@ -237,18 +250,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                         judulTA: sidang['judulTA'],
                                         ruangan: sidang['ruangan'],
                                         sebagai: sidang['sebagai'],
-                                        kedisiplinanBimbingan: sidang['kedisiplinanBimbingan'],
-                                        kreativitasPemecahanMasalah: sidang['kreativitasPemecahanMasalah'],
-                                        penguasaanMateri: sidang['penguasaanMateri'],
-                                        kelengkapanReferensi: sidang['kelengkapanReferensi'],
-                                        onSave: (updatedEntry) => _updateEntry(index, updatedEntry),
+                                        kedisiplinanBimbingan:
+                                            sidang['kedisiplinanBimbingan'],
+                                        kreativitasPemecahanMasalah: sidang[
+                                            'kreativitasPemecahanMasalah'],
+                                        penguasaanMateri:
+                                            sidang['penguasaanMateri'],
+                                        kelengkapanReferensi:
+                                            sidang['kelengkapanReferensi'],
+                                        onSave: (updatedEntry) =>
+                                            _updateEntry(index, updatedEntry),
                                       ),
                                     ),
                                   );
                                 },
                                 child: Text(
                                   'Lihat',
-                                  style: TextStyle(color: Colors.white, fontSize: fontSizeSubtitle * 0.9),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: fontSizeSubtitle * 0.9),
                                 ),
                               ),
                             ),

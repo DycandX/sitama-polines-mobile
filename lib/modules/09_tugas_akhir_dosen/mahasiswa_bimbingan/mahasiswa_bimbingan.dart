@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
 
@@ -24,7 +25,6 @@ class MahasiswaBimbingan extends StatefulWidget {
   @override
   State<MahasiswaBimbingan> createState() => _MahasiswaBimbinganState();
 }
-
 
 // Function to handle navigation item selection
 
@@ -55,12 +55,12 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
         break;
-      // case 3:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => ProfilePage()),
-      //   );
-      //   break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
+        break;
     }
   }
 
@@ -105,7 +105,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
                       child: Text(
-                        'XAVIERA PUTRI S.T, M.Kom.',
+                        'WIKTASARI , S.T., M.KOM.',
                         style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: 'Poppins',

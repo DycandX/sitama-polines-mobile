@@ -69,7 +69,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
                       child: Text(
-                        'XAVIERA PUTRI S.T, M.Kom.',
+                        'WIKTASARI , S.T., M.KOM.',
                         style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: 'Poppins',
