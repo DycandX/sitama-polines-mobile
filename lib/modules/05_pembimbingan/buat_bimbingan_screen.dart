@@ -71,7 +71,7 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
                               Navigator.pop(context);
                             },
                           ),
-                          const SizedBox(width: 220),
+                          const SizedBox(width: 100),
                           const Text(
                             'Adnan Bima Adhi N',
                             style: TextStyle(

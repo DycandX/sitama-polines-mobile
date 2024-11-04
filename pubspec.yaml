@@ -69,7 +69,14 @@ flutter:
     - assets/images/welcome_image3.png
     - assets/images/welcome_image.png
     - assets/images/google.png
-    - assets/images/xaviera.png
+    - assets/images/back.png
+    - assets/images/bimbingan.png
+    - assets/images/google.png
+    - assets/images/home.png
+    - assets/images/no.png
+    - assets/images/yes.png
+    - assets/images/logout.png
+    - assets/images/icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

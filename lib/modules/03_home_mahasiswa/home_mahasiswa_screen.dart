@@ -220,7 +220,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                 _showLogoutDialog(context); // Panggil fungsi dialog
               },
               child: Image.asset(
-                'images/logout.png',
+                'assets/images/logout.png',
                 width: 24,
                 height: 24,
               ),
@@ -250,7 +250,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                   padding: const EdgeInsets.all(
                       8.0), // Padding untuk memberi ruang di sekitar gambar
                   child: Image.asset(
-                    'images/icon.png', // Gambar icon
+                    'assets/images/icon.png', // Gambar icon
                     width: 32, // Ukuran gambar tetap
                     height: 32, // Ukuran gambar tetap
                   ),
@@ -309,7 +309,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                       padding: EdgeInsets.all(
                           12), // Padding untuk memberi ruang di sekitar gambar
                       child: Image.asset(
-                        'images/no.png', // Gambar icon silang
+                        'assets/images/no.png', // Gambar icon silang
                         width: 24,
                         height: 24,
                       ),
@@ -330,7 +330,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                       padding: EdgeInsets.all(
                           12), // Padding untuk memberi ruang di sekitar gambar
                       child: Image.asset(
-                        'images/yes.png', // Gambar icon centang
+                        'assets/images/yes.png', // Gambar icon centang
                         width: 24,
                         height: 24,
                       ),

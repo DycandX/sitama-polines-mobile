@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
 
 // Model untuk mewakili data mahasiswa
 class Mahasiswa {
@@ -23,10 +25,45 @@ class MahasiswaBimbingan extends StatefulWidget {
   State<MahasiswaBimbingan> createState() => _MahasiswaBimbinganState();
 }
 
-int selectedIndex = 1;
+
 // Function to handle navigation item selection
 
 class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
+  int selectedIndex = 1;
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+
+    // Navigate to different pages based on the index
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => JadwalSidangPage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MahasiswaBimbingan()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+        break;
+      // case 3:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => ProfilePage()),
+      //   );
+      //   break;
+    }
+  }
+
   // Daftar mahasiswa (data dummy)
   final List<Mahasiswa> mahasiswas = [
     Mahasiswa(
@@ -249,11 +286,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                   selectedItemColor:
                       Color.fromARGB(255, 55, 66, 230), // Selected icon color
                   unselectedItemColor: Colors.grey, // Unselected icon color
-                  onTap: (index) {
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
+                  onTap: _onItemTapped,
                   items: const [
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
