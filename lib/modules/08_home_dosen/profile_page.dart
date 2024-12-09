@@ -25,22 +25,22 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Color(0xFF282A74), // Background color for the profile page
       body: Stack(
         children: [
-          GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blueAccent,
-                    ),
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+          // GestureDetector(
+          //         onTap: () {
+          //           Navigator.pop(context);
+          //         },
+          //         child: Container(
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             color: Colors.blueAccent,
+          //           ),
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Icon(
+          //             Icons.arrow_back,
+          //             color: Colors.white,
+          //           ),
+          //         ),
+          //       ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -108,12 +108,12 @@ class ProfilePage extends StatelessWidget {
                 radius: 50,
                 backgroundColor: Colors.white,
                 child: ClipOval(
-                  child: Image.asset(
-                    'images/pr-50.png',
-                    width: 100, // Adjust width and height to fit within CircleAvatar
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
+                  // child: Image.asset(
+                  //   '',
+                  //   width: 100, // Adjust width and height to fit within CircleAvatar
+                  //   height: 100,
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
               ),
             ),

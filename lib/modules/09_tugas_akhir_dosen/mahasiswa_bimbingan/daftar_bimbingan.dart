@@ -37,7 +37,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 40, 20, 0),
+        padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -107,7 +107,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
             // List of Bimbingan
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 itemCount: guidanceList.length,
                 itemBuilder: (context, index) {
                   final guidance = guidanceList[index];

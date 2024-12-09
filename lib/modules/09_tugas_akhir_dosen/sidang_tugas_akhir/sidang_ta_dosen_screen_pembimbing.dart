@@ -3,6 +3,7 @@ import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'detail_screen.dart';
+import 'package:pbl_sitama/profile_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -112,63 +113,37 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Stack(
         children: [
+          ProfileHeader(),
           Padding(
-            padding:
-                EdgeInsets.only(bottom: 100), // Space for BottomNavigationBar
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'WIKTASARI , S.T., M.KOM.',
-                        style: TextStyle(
-                          fontSize: fontSizeSubtitle,
-                          color: Colors.black87,
-                        ),
+            padding: EdgeInsets.fromLTRB(
+                0, 100, 20, 0), // Space for BottomNavigationBar
+            child: Column(
+              children: [
+                // SizedBox(height: screenHeight * 0.03),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 30, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Data ujian sidang tugas akhir',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                        color: Colors.black,
                       ),
-                      const SizedBox(width: 10),
-                      CircleAvatar(
-                        radius: screenWidth * 0.045,
-                        backgroundImage:
-                            AssetImage('assets/images/welcome_image.png'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  Text(
-                    'Data Ujian Sidang Tugas Akhir',
-                    style: TextStyle(
-                      fontSize: fontSizeTitle,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 33, 37, 41),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.02),
-                  Expanded(
+                ),
+                Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(245, 245, 245, 1),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      padding: EdgeInsets.all(padding * 0.5),
+                      padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: ListView.builder(
                         itemCount: dataSidang.length,
                         itemBuilder: (context, index) {
                           final sidang = dataSidang[index];
                           return Card(
-                            color: const Color.fromRGBO(221, 221, 221, 1),
+                            color: const Color.fromRGBO(255, 246, 245, 245),
                             margin:
                                 EdgeInsets.symmetric(vertical: padding * 0.3),
                             child: ListTile(
@@ -277,57 +252,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            left: 20,
-            right: 20,
-            bottom: 30,
-            child: Container(
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: BottomNavigationBar(
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                  type: BottomNavigationBarType.fixed,
-                  currentIndex: selectedIndex,
-                  selectedItemColor: const Color.fromARGB(255, 55, 66, 230),
-                  unselectedItemColor: Colors.grey,
-                  onTap: _onItemTapped,
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.groups),
-                      label: 'Bimbingan',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.note_alt),
-                      label: 'Menguji',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Profile',
-                    ),
-                  ],
-                ),
-              ),
+              
+              ],
             ),
           ),
         ],
