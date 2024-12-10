@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
+import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_ta_input.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
 import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/sidang_tugas_akhir/sidang_ta_screen.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:pbl_sitama/modules/02_login/login_page.dart';
+
+import '../../services/api_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,10 +31,67 @@ class homeMahasiswaScreen extends StatefulWidget {
 }
 
 class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
+  // API Fetch
+  String? mhsNama;
+  int? mhsNim;
+  String? pembimbing1;
+  String? pembimbing2;
+  String? ta_judul;
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+
+      setState(() {
+        mhsNama = data['data']['mahasiswa']['mhs_nama'];
+        mhsNim = data['data']['mahasiswa']['mhs_nim'];
+        ta_judul = data['data']['mahasiswa']['ta_judul'];
+
+        if (data['data']['mahasiswa']['dosen'] != null) {
+          pembimbing1 = data['data']['mahasiswa']['dosen'].length > 0
+              ? data['data']['mahasiswa']['dosen'][0]['dosen_nama']
+              : "Belum Diplotting";
+          pembimbing2 = data['data']['mahasiswa']['dosen'].length > 1
+              ? data['data']['mahasiswa']['dosen'][1]['dosen_nama']
+              : "Belum Diplotting";
+        } else {
+          pembimbing1 = "Belum Diplotting";
+          pembimbing2 = "Belum Diplotting";
+        }
+      });
+    } catch (e) {
+      print('Error: $e');
+
+      setState(() {
+        pembimbing1 = "Belum Diplotting";
+        pembimbing2 = "Belum Diplotting";
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
+
+  // UI
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF282A74), // Background warna #282A74
+      backgroundColor: Color(0xFF282A74),// Background warna #282A74
+      appBar: AppBar(
+        leadingWidth: 10, // Adjusted for better alignment
+        toolbarHeight: 10, // Adjusted height for better header presentation
+        backgroundColor: Color(0xFF282A74),
+      ),
       body: Stack(
         children: [
           Column(
@@ -49,81 +114,86 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                           ),
                         ),
                         SizedBox(width: 24),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Adnan Bima Adhi N',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold, // Poppins Bold 15
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              '4.33.23.2.03',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
+                        mhsNama != null && mhsNim != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    mhsNama!,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 18,
+                                      fontWeight:
+                                          FontWeight.bold, // Poppins Bold 15
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    mhsNim!.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : CircularProgressIndicator(),
                       ],
                     ),
                     SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.book, // Placeholder icon
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Pembimbing 1\nJanuar St. MT.',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                fontWeight:
-                                    FontWeight.w500, // Poppins Medium 14
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.book, // Placeholder icon
                                 color: Colors.white,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                              SizedBox(height: 8),
+                              Text(
+                                'Pembimbing 1\n$pembimbing1',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500, // Poppins Medium 14
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
                         Container(
                           height: 40, // Tinggi garis vertikal
                           width: 1, // Lebar garis vertikal
                           color: Colors.white54, // Warna garis vertikal
                         ),
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.book, // Placeholder icon
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Pembimbing 2\nIlham  St. MT.',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                fontWeight:
-                                    FontWeight.w500, // Poppins Medium 14
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.book, // Placeholder icon
                                 color: Colors.white,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                              SizedBox(height: 8),
+                              Text(
+                                'Pembimbing 2\n$pembimbing2',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500, // Poppins Medium 14
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -137,73 +207,85 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                       bottom: 0), // Menghilangkan padding kiri, kanan, bawah
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(10)),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                     ),
                     margin: EdgeInsets.zero, // Fit ke layar tanpa ruang ekstra
                     elevation: 24,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          buildMenuItem(
-                            'Dashboard Tugas\nAkhir',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DashboardScreen(),
-                                ),
-                              );
+                      child: SingleChildScrollView( // Menggunakan SingleChildScrollView jika konten lebih panjang
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildMenuItem(
+                              'Dashboard\nTugas Akhir',
+                                  () {
+                                if (ta_judul == null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FinalProjectScreen(),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DashboardScreen(),
+                                    ),
+                                  );
+                                }
 
-                              // Navig asi ke Dashboard Tugas Akhir
-                              print('Navigasi ke Dashboard Tugas Akhir');
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          buildMenuItem(
-                            'Bimbingan',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PembimbinganScreen(pembimbing: '',),
-                                ),
-                              );
-                              // Navigasi ke Bimbingan
-                              print('Navigasi ke Bimbingan');
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          buildMenuItem(
-                            'Daftar Tugas\nAkhir',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DaftarTaScreen(),
-                                ),
-                              );
-                              // Navigasi ke Daftar Tugas Akhir
-                              print('Navigasi ke Daftar Tugas Akhir');
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          buildMenuItem(
-                            'Sidang Tugas\nAkhir',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SidangTaScreen(),
-                                ),
-                              );
-                              // Navigasi ke Sidang Tugas Akhir
-                              print('Navigasi ke Sidang Tugas Akhir');
-                            },
-                          ),
-                        ],
+                                // Navigasi ke Dashboard Tugas Akhir
+                                print('Navigasi ke Dashboard Tugas Akhir');
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            buildMenuItem(
+                              'Bimbingan',
+                                  () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PembimbinganScreen(
+                                      pembimbing: '',
+                                    ),
+                                  ),
+                                );
+                                // Navigasi ke Bimbingan
+                                print('Navigasi ke Bimbingan');
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            buildMenuItem(
+                              'Daftar Tugas\nAkhir',
+                                  () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DaftarTaScreen(),
+                                  ),
+                                );
+                                // Navigasi ke Daftar Tugas Akhir
+                                print('Navigasi ke Daftar Tugas Akhir');
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            buildMenuItem(
+                              'Sidang Tugas\nAkhir',
+                                  () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SidangTaScreen(),
+                                  ),
+                                );
+                                // Navigasi ke Sidang Tugas Akhir
+                                print('Navigasi ke Sidang Tugas Akhir');
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -318,9 +400,9 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                   // Tombol Centang
                   GestureDetector(
                     onTap: () {
-                      // Tambahkan logika untuk melakukan log out di sini
-                      Navigator.of(context)
-                          .pop(); // Menutup dialog setelah log out
+                      _logout(
+                          context); // Call the _logout function to clear the token and navigate to LoginPage
+                      Navigator.of(context).pop(); // Close the dialog
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -340,17 +422,24 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
               ),
             ],
           ),
-          actions: [
-            // Tambahkan jika Anda ingin tombol lain di bawah dialog
-            // TextButton(
-            //   onPressed: () {
-            //     Navigator.of(context).pop(); // Menutup dialog
-            //   },
-            //   child: Text('Batal'),
-            // ),
-          ],
         );
       },
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    // Clear token from SharedPreferences (or other storage)
+    SharedPreferences.setMockInitialValues({});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs
+        .remove('token'); // assuming you stored the token under the key 'token'
+
+    // Redirect to the login screen
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) =>
+          false, // This ensures the back button won't take you back to the previous screen
     );
   }
 }

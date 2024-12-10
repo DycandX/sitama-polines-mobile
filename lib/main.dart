@@ -8,8 +8,8 @@ import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daft
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/dataMhs_ta.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
-
-
+import 'package:pbl_sitama/services/api_service.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
 
@@ -18,23 +18,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      
-      //home: JadwalSidangPage(),
-      home: WelcomePage(),
-      // home: PembimbinganScreen(pembimbing: '',),
-      //home: HomeScreen(),
-      // home: MahasiswaBimbingan(),
-      // home: PembimbinganScreen(),
-      // home: WelcomePage(),
-      // home: SidangTaScreen(),
-      // home: PembimbinganScreen(),
-      // home: JadwalSidangPage(),
-      // home: homeMahasiswaScreen(),
-      // home: DashboardScreen(),
-      // home: PembimbinganScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: WelcomePage(),
+        //home: JadwalSidangPage(),
+        // home: PembimbinganScreen(pembimbing: '',),
+        //home: HomeScreen(),
+        // home: MahasiswaBimbingan(),
+        // home: PembimbinganScreen(),
+        // home: WelcomePage(),
+        // home: SidangTaScreen(),
+        // home: PembimbinganScreen(),
+        // home: JadwalSidangPage(),
+        // home: homeMahasiswaScreen(),
+        // home: DashboardScreen(),
+        // home: PembimbinganScreen(),
+      ),
     );
   }
 }
-
