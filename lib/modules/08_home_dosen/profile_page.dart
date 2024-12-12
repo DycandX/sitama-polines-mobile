@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../02_login/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +25,13 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF282A74), // Background color for the profile page
+      appBar: AppBar(
+        leadingWidth: 10, // Adjusted for better alignment
+        toolbarHeight: 10, // Adjusted height for better header presentation
+        backgroundColor: Color(0xFF282A74),
+      ),
+      backgroundColor:
+          Color(0xFF282A74), // Background color for the profile page
       body: Stack(
         children: [
           // GestureDetector(
@@ -82,7 +91,8 @@ class ProfilePage extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red, // Red button color
-                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                       textStyle: TextStyle(
                         fontSize: 15,
                         fontFamily: 'Poppins',
@@ -108,13 +118,13 @@ class ProfilePage extends StatelessWidget {
                 radius: 50,
                 backgroundColor: Colors.white,
                 child: ClipOval(
-                  // child: Image.asset(
-                  //   '',
-                  //   width: 100, // Adjust width and height to fit within CircleAvatar
-                  //   height: 100,
-                  //   fit: BoxFit.cover,
-                  // ),
-                ),
+                    // child: Image.asset(
+                    //   '',
+                    //   width: 100, // Adjust width and height to fit within CircleAvatar
+                    //   height: 100,
+                    //   fit: BoxFit.cover,
+                    // ),
+                    ),
               ),
             ),
           ),
@@ -174,8 +184,8 @@ class ProfilePage extends StatelessWidget {
                   // Yes Button
                   IconButton(
                     onPressed: () {
+                      _logout(context);
                       Navigator.of(context).pop(); // Close dialog
-                      Navigator.pop(context); // Navigate back (logout action)
                     },
                     icon: Icon(Icons.check, color: Colors.green),
                   ),
@@ -185,6 +195,22 @@ class ProfilePage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    // Clear token from SharedPreferences (or other storage)
+    SharedPreferences.setMockInitialValues({});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs
+        .remove('token'); // assuming you stored the token under the key 'token'
+
+    // Redirect to the login screen
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) =>
+          false, // This ensures the back button won't take you back to the previous screen
     );
   }
 }

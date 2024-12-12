@@ -14,7 +14,7 @@ class DetailScreen2 extends StatefulWidget {
   final Function(Map<String, dynamic>) onSave;
 
   const DetailScreen2({
-    Key? key,
+    super.key,
     required this.nim,
     required this.name,
     required this.tahunAkademik,
@@ -26,7 +26,7 @@ class DetailScreen2 extends StatefulWidget {
     required this.presentasiPenampilan, // New field
     required this.hasilRancangBangun, // New field
     required this.onSave,
-  }) : super(key: key);
+  });
 
   @override
   _DetailScreen2State createState() => _DetailScreen2State();

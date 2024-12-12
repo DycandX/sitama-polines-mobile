@@ -4,13 +4,16 @@ import 'package:pbl_sitama/modules/05_pembimbingan/daftar_bimbingan.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/lihat_bimbingan_screen.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/status_bimbingan_screen.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/api_service.dart';
+import '../05_pembimbingan/pembimbingan_controller.dart';
 
 
 class PembimbinganScreen extends StatefulWidget {
   final String pembimbing;
 
-  const PembimbinganScreen({required this.pembimbing, Key? key})
-      : super(key: key);
+  const PembimbinganScreen({required this.pembimbing, super.key});
 
   @override
   _PembimbinganScreenState createState() => _PembimbinganScreenState();
@@ -19,10 +22,58 @@ class PembimbinganScreen extends StatefulWidget {
 class _PembimbinganScreenState extends State<PembimbinganScreen> {
   List<Map<String, dynamic>> bimbinganList = [];
 
+  // API fetch data
+  String? mhsNama;
+  int? mhsNim;
+  int? pembimbing1_count;
+  int? pembimbing2_count;
+  int? pembimbing1_count_total;
+  int? pembimbing2_count_total;
+
+  bool isLoading = true;
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+      setState(() {
+        // Data mahasiswa dasar
+        mhsNama = data['data']['mhs_nama'];
+        mhsNim = data['data']['mhs_nim'];
+        pembimbing1_count = data['pembimbing1_count'];
+        pembimbing2_count = data['pembimbing2_count'];
+        pembimbing1_count_total = data['pembimbing1_count_total'];
+        pembimbing2_count_total = data['pembimbing2_count_total'];
+
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
+  // End of API Code
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        leadingWidth: 10, // Adjusted for better alignment
+        toolbarHeight: 10, // Adjusted height for better header presentation
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -30,34 +81,40 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
           children: [
             // Header Row with Back Button, Name, and Avatar
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color.fromRGBO(40, 42, 116, 1),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromRGBO(40, 42, 116, 1),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    ),
                   ),
                 ),
+                Spacer(),
+                // Avatar dan Nama User
                 Row(
                   children: [
-                    const Text(
-                      'Adnan Bima Adhi N',
+                    SizedBox(width: 30),
+                    Text(
+                      mhsNama ?? "Loading...", // Ensure mhsNama is not null
                       style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage('assets/images/profile.png'),
+                    SizedBox(width: 10),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.grey[200],
+                      child: Icon(Icons.person, size: 30, color: Colors.black),
                     ),
                   ],
                 ),
@@ -73,8 +130,8 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '${bimbinganList.length}/8',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    '${(pembimbing1_count ?? 0) + (pembimbing2_count ?? 0)}/${(pembimbing1_count_total ?? 0) + (pembimbing2_count_total ?? 0)}',
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),

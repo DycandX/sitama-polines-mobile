@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/daftar_bimbingan.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/api_service.dart';
+import '../05_pembimbingan/lihat_bimbingan_controller.dart';
+import 'daftar_bimbingan2.dart';
 
 
 class LihatBimbinganScreen extends StatefulWidget {
-  const LihatBimbinganScreen({Key? key, required String pembimbing}) : super(key: key);
+  const LihatBimbinganScreen({super.key, required String pembimbing});
 
   @override
   State<LihatBimbinganScreen> createState() => _LihatBimbinganScreenState();
@@ -14,9 +19,86 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
   String pembimbing1 = "Pembimbing 1";
   String pembimbing2 = "Pembimbing 2";
 
+  // API fetch data
+  String? mhsNama;
+  String? pembimbing1_nama;
+  String? pembimbing2_nama;
+  int? mhsNim;
+  int? countStatus1Pembimbing1;
+  int? countStatus1Pembimbing2;
+  int? countTotalPembimbing1;
+  int? countTotalPembimbing2;
+  int? masterJumlah;
+  int? pembimbing_count_1;
+  int? pembimbing_count_2;
+  int? pembimbing_count_1_total;
+  int? pembimbing_count_2_total;
+
+  bool isLoading = true;
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+      setState(() {
+        // Data mahasiswa dasar
+        mhsNama = data['data']['mhs_nama'];
+        mhsNim = data['data']['mhs_nim'];
+        pembimbing1_nama = data['data']['dosen'][0]['dosen_nama'];
+        pembimbing2_nama = data['data']['dosen'][1]['dosen_nama'];
+
+        pembimbing_count_1 = data['pembimbing1_count'];
+        pembimbing_count_2 = data['pembimbing2_count'];
+        pembimbing_count_1_total = data['pembimbing1_count_total'];
+        pembimbing_count_2_total = data['pembimbing2_count_total'];
+
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error: $e');
+    }
+  }
+
+
+  String getStatusText(int? pembimbingCount, int? pembimbingCountTotal) {
+    if (pembimbingCount == null || pembimbingCountTotal == null) {
+      return "Tidak Lengkap";
+    }
+    return pembimbingCount >= pembimbingCountTotal ? "Lengkap" : "Tidak Lengkap";
+  }
+
+
+  Color getStatusColor(int? pembimbingCount, int? pembimbingCountTotal) {
+    if (pembimbingCount == null || pembimbingCountTotal == null) {
+      return Colors.red;
+    }
+    return pembimbingCount >= pembimbingCountTotal ? Colors.green : Colors.red;
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
+  // End of API Code
+
   @override
   Widget build(BuildContext context) {
+    print(masterJumlah);
     return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 10, // Adjusted for better alignment
+        toolbarHeight: 10, // Adjusted height for better header presentation
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isDataPlotted
@@ -24,8 +106,8 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                 children: [
                   // Header Row with Back Button, Name, and Avatar
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Container(
@@ -41,22 +123,23 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                           ),
                         ),
                       ),
+                      Spacer(),
+                      // Avatar dan Nama User
                       Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              'Adnan Bima Adhi N',
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
+                          SizedBox(width: 30),
+                          Text(
+                            mhsNama ?? "Loading...", // Ensure mhsNama is not null
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
+                          SizedBox(width: 10),
                           CircleAvatar(
-                            radius: 20,
-                            backgroundImage: AssetImage('assets/images/profile.png'),
+                            radius: 25,
+                            backgroundColor: Colors.grey[200],
+                            child: Icon(Icons.person, size: 30, color: Colors.black),
                           ),
                         ],
                       ),
@@ -65,9 +148,16 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                   const SizedBox(height: 16),
                   // Pembimbing 1 Box
                   PembimbingBox(
-                    pembimbing: pembimbing1,
-                    statusText: "Lengkap",
-                    statusColor: Colors.green,
+                    pembimbing: pembimbing1_nama ?? 'Loading . . .',
+                    pembimbing_ke: "Pembimbing ke 1",
+                    statusText: getStatusText(
+                      pembimbing_count_1,
+                      pembimbing_count_1_total,
+                    ),
+                    statusColor: getStatusColor(
+                      pembimbing_count_1,
+                      pembimbing_count_1_total,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -80,14 +170,21 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                   const SizedBox(height: 16),
                   // Pembimbing 2 Box
                   PembimbingBox(
-                    pembimbing: pembimbing2,
-                    statusText: "Belum Lengkap",
-                    statusColor: Colors.red,
+                    pembimbing: pembimbing2_nama ?? "Loading . . .",
+                    pembimbing_ke: "Pembimbing ke 2",
+                    statusText: getStatusText(
+                      pembimbing_count_2,
+                      pembimbing_count_2_total,
+                    ),
+                    statusColor: getStatusColor(
+                      pembimbing_count_2,
+                      pembimbing_count_2_total,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DaftarBimbinganScreen(pembimbing: pembimbing2),
+                          builder: (context) => DaftarBimbingan2(pembimbing: pembimbing2),
                         ),
                       );
                     },
@@ -109,12 +206,14 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
 
 class PembimbingBox extends StatelessWidget {
   final String pembimbing;
+  final String pembimbing_ke;
   final String statusText;
   final Color statusColor;
   final VoidCallback onTap;
 
-  const PembimbingBox({
+  const PembimbingBox({super.key, 
     required this.pembimbing,
+    required this.pembimbing_ke,
     required this.statusText,
     required this.statusColor,
     required this.onTap,
@@ -154,7 +253,7 @@ class PembimbingBox extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Wiktasari, S.T, M.Kom.",
+                  pembimbing_ke,
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 const SizedBox(height: 8),

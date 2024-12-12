@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
+import 'package:http/http.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_controller.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,34 +30,73 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _login() {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+  void _login(String email, String password) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-    // Check if entered credentials match the predefined credentials
-    if (email == "mahasiswa@polines.ac.id" && password == "12345678") {
-      // Navigate to homeMahasiswaScreen if credentials are correct
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => homeMahasiswaScreen(),
-        ),
+    try {
+      Response response = await post(
+        Uri.parse('${Config.baseUrl}login'),
+        body: {
+          'email': email,
+          'password': password,
+        },
       );
-    } else if (email == "dosen@polines.ac.id" && password == "12345678") {
-      // Navigate to JadwalSidangPage if credentials are correct
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => JadwalSidangPage(),
-        ),
-      );
-    } else {
-      // Show error message if credentials are incorrect
+
+      if (response.statusCode == 200) {
+        // Parse response and extract token
+        var data = jsonDecode(response.body);
+        final token = data['token'];
+        final role = data['role'];
+
+        // Print login success for debugging
+        print('Login successfully');
+        print('Token: $token');
+
+        // Set token using Provider
+        Provider.of<AuthProvider>(context, listen: false).setToken(token);
+
+        // Navigate based on user type
+        if (role.contains("dosen")) {
+          // Navigate to JadwalSidangPage for lecturers
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => JadwalSidangPage()),
+            (route) => false,
+          );
+        } else if (role.contains("mahasiswa")){
+          // Navigate to homeMahasiswaScreen for students
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => homeMahasiswaScreen()),
+            (route) => false,
+          );
+        }
+      } else {
+        // Show error dialog if login fails
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Login Failed"),
+            content: const Text("Incorrect email or password."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error during login: $e");
+
+      // Show error dialog for network or server errors
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Login Failed"),
-          content: const Text("Incorrect email or password."),
+          title: const Text("Error"),
+          content: Text("An error occurred: ${e.toString()}"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -193,7 +239,9 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: _login,
+                              onPressed: () => _login(
+                                  _emailController.text.toString(),
+                                  _passwordController.text.toString()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[600],
                                 minimumSize: const Size(double.infinity, 50),
