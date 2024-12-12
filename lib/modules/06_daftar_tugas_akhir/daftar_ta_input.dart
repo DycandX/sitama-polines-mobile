@@ -1,34 +1,54 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
-import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_ta_controller.dart';
+import 'package:pbl_sitama/modules/06_daftar_tugas_akhir/daftar_ta_screen.dart';
+import 'daftar_ta_controller.dart';
 import 'package:pbl_sitama/services/api_service.dart';
 import 'package:provider/provider.dart';
 
-class FinalProjectScreen extends StatefulWidget {
-  const FinalProjectScreen({super.key}); // Added key parameter
+class DaftarTaInput extends StatefulWidget {
+  const DaftarTaInput({super.key});
 
   @override
-  State<FinalProjectScreen> createState() => _FinalProjectScreenState();
+  State<DaftarTaInput> createState() => _DaftarInputScreenState();
 }
 
-class _FinalProjectScreenState extends State<FinalProjectScreen> {
+class _DaftarInputScreenState extends State<DaftarTaInput> {
   String? MhsNama;
   String? ta_judul;
+  String? selectedJadwal;
+  List<Map<String, dynamic>> jadwalList = [];
 
   Future<void> loadMahasiswaData(String token) async {
     try {
       final data = await ApiService.fetchMahasiswa(token);
-      setState(() {
-        // Data mahasiswa dasar
-        MhsNama = data['data']['mahasiswa']['mhs_nama'];
-        ta_judul = data['data']['mahasiswa']['ta_judul'];
+      if (data != null) {
+        setState(() {
+          MhsNama = data['mahasiswa']['mhs_nama'];
+          ta_judul = data['mahasiswa']['ta_judul'];
+          _taInputController.text = ta_judul!;
+        });
 
-      });
+        if (data['jadwal'] != null) {
+          setState(() {
+            // Simplified jadwal list conversion
+            jadwalList = (data['jadwal'] as Map<String, dynamic>)
+                .values
+                .map((value) => {
+              'id': value['jadwal_id'].toString(),
+              'sesi_nama': value['sesi_nama'],
+              'tgl_sidang': value['tgl_sidang'],
+              'hari_sidang': value['hari_sidang'],
+            })
+                .toList();
+          });
+        } else {
+          print('Jadwal data is null');
+        }
+      } else {
+        print('Data is null');
+      }
     } catch (e) {
-      setState;
       print('Error: $e');
     }
   }
@@ -36,7 +56,6 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
   @override
   void initState() {
     super.initState();
-
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     if (token != null) {
       loadMahasiswaData(token);
@@ -44,7 +63,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
       print('User is not authenticated');
     }
   }
-  
+
   final TextEditingController _taInputController = TextEditingController();
 
   @override
@@ -73,6 +92,23 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
       return;
     }
 
+    if (selectedJadwal == null) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Jadwal Sidang belum dipilih."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     try {
       final token = Provider.of<AuthProvider>(context, listen: false).token;
       if (token == null) {
@@ -80,20 +116,19 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
         return;
       }
 
-      // Kirim data ke API
       final response = await post(
-        Uri.parse('${Config.baseUrl}dashboard-mahasiswa'),
+        Uri.parse('${Config.baseUrl}daftar-tugas-akhir/daftar'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Tambahkan token
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'judul_ta': taJudul,
+          'judulFinal': taJudul,
+          'jadwal': selectedJadwal,
         }),
       );
 
       if (response.statusCode == 200) {
-        // Data berhasil disimpan di API
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -102,12 +137,11 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Tutup dialog
+                  Navigator.pop(context);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          DashboardScreen(), // Navigasi ke DashboardScreen
+                      builder: (context) => DaftarTaScreen(),
                     ),
                   );
                 },
@@ -116,9 +150,11 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             ],
           ),
         );
-        _taInputController.clear(); // Reset input field
-      }else {
-        // Gagal menyimpan data
+        _taInputController.clear();
+        setState(() {
+          selectedJadwal = null; // Reset selectedJadwal after successful submission
+        });
+      } else {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -151,7 +187,6 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,24 +199,22 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Menampilkan RawMaterialButton dan Row dalam satu baris
+            // Back button and user information section
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Transform.translate(
-                  offset: Offset(-25, 0), // Menggeser ke kiri sebesar 10 piksel
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.indigo[900],
-                    padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 15.0,
-                      color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromRGBO(40, 42, 116, 1),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
                 ),
@@ -191,14 +224,12 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      MhsNama ??
-                          'Loading...', // Tampilkan 'Loading...' jika MhsNama masih null
+                      MhsNama ?? "Loading...", // Ensure mhsNama is not null
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
-
                     SizedBox(width: 10),
                     CircleAvatar(
                       radius: 25,
@@ -210,15 +241,13 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
               ],
             ),
             SizedBox(height: 30),
-            // Judul
             Padding(
-              padding:
-                  const EdgeInsets.only(left: 10.0), // Menggeser judul ke kanan
+              padding: const EdgeInsets.only(left: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dashboard',
+                    'Daftar',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -226,7 +255,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                     ),
                   ),
                   Text(
-                    'Tugas Akhir',
+                    'Sidang Tugas Akhir',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -265,22 +294,20 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                   SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[
-                          200], // Light grey background to match the image
+                      color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: TextField(
                       controller: _taInputController,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                       ),
                     ),
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Nama Anggota Kelompok',
+                    'Pilih Jadwal Sidang',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -290,32 +317,45 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                   SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[
-                          200], // Light grey background to match the image
+                      color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: TextField(
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      hint: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10), // Tambahkan padding horizontal
+                        child: Text('Pilih Jadwal'),
                       ),
+                      value: selectedJadwal,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedJadwal = newValue;
+                        });
+                      },
+                      items: jadwalList.map((jadwal) {
+                        return DropdownMenuItem<String>(
+                          value: jadwal['id'],
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                              child: Text(
+                              '${jadwal['sesi_nama']} - ${jadwal['tgl_sidang']} (${jadwal['hari_sidang']})',
+                            ),
+                          )
+                        );
+                      }).toList(),
                     ),
                   ),
                   SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => _input(
-                          _taInputController.toString()),
+                      onPressed: () => _input(_taInputController.text),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 15), // To match button height
+                        padding: EdgeInsets.symmetric(vertical: 15),
                       ),
                       child: Text(
-                        'Ajukan Judul',
+                        'Daftar Sidang',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

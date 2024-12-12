@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
-import '../../../services/api_service.dart';
+import '../../services/api_service.dart';
 
 class ApiService {
   static Future<Map<String, dynamic>> fetchMahasiswa(String token) async {
-    final url = Uri.parse('${Config.baseUrl}sidang-tugas-akhir');
+    final url = Uri.parse(
+        '${Config.baseUrl}bimbingan-mahasiswa');
 
     try {
       final response = await http.get(

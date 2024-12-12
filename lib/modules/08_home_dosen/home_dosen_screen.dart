@@ -4,6 +4,8 @@ import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/maha
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
 import 'package:pbl_sitama/profile_header.dart';
 class JadwalSidangPage extends StatefulWidget {
+  const JadwalSidangPage({super.key});
+
   @override
   _JadwalSidangPageState createState() => _JadwalSidangPageState();
 }

@@ -1,5 +1,12 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/sidang_tugas_akhir/sidang_ta_controller.dart';
 import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/revisi_tugas_akhir/daftar_revisi.dart';
+import 'package:pbl_sitama/services/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class SidangTaScreen extends StatefulWidget {
   const SidangTaScreen({super.key});
@@ -8,13 +15,147 @@ class SidangTaScreen extends StatefulWidget {
 }
 
 class _SidangTaScreenState extends State<SidangTaScreen> {
+  String? mhsNama;
+  String? pembimbing1;
+  String? pembimbing2;
+  String? penguji1;
+  String? penguji2;
+  String? penguji3;
+  String? sekretaris;
+  String? thnAkademik;
+  String? judulTA;
+  String? tglSidang;
+  String? ruangSidang;
+  String? sesiSidang;
+  int? statusLulus;
+
+  Future<String> getDownloadDirectoryPath() async {
+    final directory = Directory('/storage/emulated/0/Download');
+    if (await directory.exists()) {
+      return directory.path;
+    }
+    throw Exception("Direktori tidak ditemukan");
+  }
+
+  // Fungsi untuk mengunduh PDF berdasarkan URL
+  Future<void> downloadPdf(BuildContext context, String pdfUrl, String fileName) async {
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    try {
+      // Direktori untuk menyimpan file
+      final directory = Directory('/storage/emulated/0/Download');
+      final filePath = "${directory.path}/$fileName";
+
+      // Mengunduh file dengan Dio
+      Dio dio = Dio();
+      Response response = await dio.download(
+        pdfUrl,
+        filePath,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/pdf',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("File berhasil diunduh: $filePath")),
+        );
+      } else {
+        throw Exception("Failed to download PDF. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal mengunduh file: $e")),
+      );
+    }
+  }
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+      print('Fetched data: $data');
+
+      setState(() {
+        mhsNama = data['data']['mahasiswa']['mhs_nama'];
+        pembimbing1 = data['data']['mahasiswa']['dosen'].isNotEmpty ? data['data']['mahasiswa']['dosen'][0]['dosen_nama'] : 'Belum Di Plotting';
+        pembimbing2 = data['data']['mahasiswa']['dosen'].length > 1 ? data['data']['mahasiswa']['dosen'][1]['dosen_nama'] : 'Belum Di Plotting';
+
+        // Pastikan array penguji memiliki elemen sebelum mengaksesnya
+        penguji1 = data['data']['mahasiswa']['penguji'].isNotEmpty ? data['data']['mahasiswa']['penguji'][0]['penguji_nama'] : 'Belum Di Plotting';
+        penguji2 = data['data']['mahasiswa']['penguji'].length > 1 ? data['data']['mahasiswa']['penguji'][1]['penguji_nama'] : 'Belum Di Plotting';
+        penguji3 = data['data']['mahasiswa']['penguji'].length > 2 ? data['data']['mahasiswa']['penguji'][2]['penguji_nama'] : 'Belum Di Plotting';
+
+        sekretaris = data['data']['mahasiswa']['sekre'];
+        thnAkademik = data['data']['mahasiswa']['tahun_akademik'];
+        judulTA = data['data']['mahasiswa']['judul_final'];
+        tglSidang = data['data']['mahasiswa']['tgl_sidang'];
+        ruangSidang = data['data']['mahasiswa']['ruangan_nama'];
+        sesiSidang = data['data']['mahasiswa']['sesi_nama'];
+
+        statusLulus = data['data']['taSidang']['status_lulus'];
+      });
+    } catch (e) {
+      print('Error: $e');
+      setState(() {});
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
+
+  String _getStatusText() {
+    if (tglSidang == null) return 'Loading . . .';
+
+    try {
+      final DateTime sidangDate = DateFormat('yyyy-MM-dd').parse(tglSidang!);
+      final DateTime currentDate = DateTime.now();
+
+      if (currentDate.isAfter(sidangDate)) {
+        return 'Sudah Sidang';
+      } else {
+        return 'Belum Sidang';
+      }
+    } catch (e) {
+      return 'Invalid Date';
+    }
+  }
+
+  Color _getStatusColor() {
+    if (tglSidang == null) return Colors.grey;
+
+    try {
+      final DateTime sidangDate = DateFormat('yyyy-MM-dd').parse(tglSidang!);
+      final DateTime currentDate = DateTime.now();
+
+      if (currentDate.isAfter(sidangDate)) {
+        return Colors.green; // Warna hijau untuk Sudah Sidang
+      } else {
+        return Colors.red; // Warna merah untuk Belum Sidang
+      }
+    } catch (e) {
+      return Colors.grey; // Warna default untuk kesalahan parsing
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(statusLulus);
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 10,
         toolbarHeight: 10,
-        backgroundColor: Colors.indigo[900],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -22,32 +163,34 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Transform.translate(
-                  offset: Offset(-20, 0),
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.indigo[900],
-                    padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 15.0,
-                      color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromRGBO(40, 42, 116, 1),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
                 ),
                 Spacer(),
+                // Avatar dan Nama User
                 Row(
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      'Adnan Bima Adhi N',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      mhsNama ?? "Loading...", // Ensure mhsNama is not null
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(
@@ -82,26 +225,40 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextField(label: 'Pembimbing 1', isEditable: false),
-                      SizedBox(height: 10),
-                      CustomTextField(label: 'Pembimbing 2', isEditable: false),
+                      CustomTextField(
+                          label: 'Pembimbing 1',
+                          placeholderText: pembimbing1 ?? 'Loading . . .'),
                       SizedBox(height: 10),
                       CustomTextField(
-                          label: 'Penguji',
-                          placeholderText: 'Belum Di Plotting'),
+                          label: 'Pembimbing 2',
+                          placeholderText: pembimbing2 ?? 'Loading . . .'),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                          label: 'Penguji 1',
+                          placeholderText: penguji1 ?? 'Belum Di Plotting'),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                          label: 'Penguji 2',
+                          placeholderText: penguji2 ?? 'Belum Di Plotting'),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                          label: 'Penguji 3',
+                          placeholderText: penguji3 ?? 'Belum Di Plotting'),
                       SizedBox(height: 10),
                       CustomTextField(
                           label: 'Sekretaris',
-                          placeholderText: 'Belum Di Plotting'),
+                          placeholderText: sekretaris ?? 'Loading . . .'),
                       SizedBox(height: 10),
                       CustomTextField(
-                          label: 'Tahun Akademik', isEditable: false),
+                          label: 'Tahun Akademik',
+                          placeholderText: thnAkademik ?? 'Loading . . .'),
                       SizedBox(height: 10),
                       CustomTextField(
                           label: 'Judul Tugas Akhir',
-                          maxLines: 2,
-                          isEditable: false),
+                          placeholderText: judulTA ?? 'Loading . . .',
+                          ),
                     ],
                   ),
                 ),
@@ -115,42 +272,81 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextField(label: 'Hari/Tanggal', isEditable: false),
-                      SizedBox(height: 10),
-                      CustomTextField(label: 'Ruangan', isEditable: false),
-                      SizedBox(height: 10),
-                      CustomTextField(label: 'Sesi', isEditable: false),
+                      CustomTextField(
+                          label: 'Tanggal Sidang',
+                          placeholderText: tglSidang ?? 'Loading . . .'),
                       SizedBox(height: 10),
                       CustomTextField(
-                          label: 'Status Sidang',
-                          placeholderText: 'Belum melaksanakan sidang'),
+                          label: 'Ruang Sidang',
+                          placeholderText: ruangSidang ?? 'Loading . . .'),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                          label: 'Sesi Sidang',
+                          placeholderText: sesiSidang ?? 'Loading . . .'),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        label: 'Status Sidang',
+                        placeholderText: _getStatusText(),
+                        isEditable: false,
+                        style: TextStyle(
+                          color:
+                              _getStatusColor(), // Warna teks berdasarkan status
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),
               ],
             ),
             SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DaftarRevisiScreen(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            if (statusLulus == 2)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DaftarRevisiScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  ),
+                  child: Text(
+                    'Revisi',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
-                child: Text(
-                  'Revisi',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+              )
+            else if (statusLulus == 1)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    print("${Config.baseUrl}download-lembar-pengesahan");
+                    downloadPdf(context, "${Config.baseUrl}download-lembar-pengesahan", "Lembar Pengesahan.pdf");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 10.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "Cetak Lembar Persetujuan",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -162,7 +358,8 @@ class CustomExpansionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  const CustomExpansionCard({super.key, required this.title, required this.children});
+  const CustomExpansionCard(
+      {super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -193,12 +390,15 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final String? placeholderText;
   final bool isEditable;
+  final TextStyle? style; // Tambahkan parameter style
 
-  const CustomTextField({super.key, 
+  const CustomTextField({
+    super.key,
     required this.label,
     this.maxLines = 1,
     this.placeholderText,
     this.isEditable = true,
+    this.style, // Inisialisasi parameter style
   });
 
   @override
@@ -211,9 +411,11 @@ class CustomTextField extends StatelessWidget {
         readOnly: true,
         controller:
             isPlaceholder ? TextEditingController(text: placeholderText) : null,
-        style: isPlaceholder
-            ? TextStyle(fontStyle: FontStyle.italic, color: Colors.red)
-            : TextStyle(color: Colors.black87),
+        style: style ??
+            TextStyle(
+              fontStyle: FontStyle.normal,
+              color: Colors.black87,
+            ), // Gunakan style jika tersedia
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey),
@@ -228,3 +430,4 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
+

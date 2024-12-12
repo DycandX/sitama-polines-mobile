@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pbl_sitama/services/api_service.dart';
+import 'package:provider/provider.dart';
+
+import '../04_dashboard_tugas_akhir/dashboard_ta_controller.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -8,16 +12,116 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  // API fetch data
+  String? mhsNama;
+  int? mhsNim;
+  String? program_studi;
+  String? tahun_akademik;
+  String? ta_judul;
+  String? pembimbing1_nama;
+  String? pembimbing2_nama;
+  String? pembimbing1_nip;
+  String? pembimbing2_nip;
+  String? dosen_nama;
+
+  bool isLoading = true;
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+      setState(() {
+        // Data mahasiswa dasar
+        mhsNama = data['data']['mahasiswa']['mhs_nama'];
+        mhsNim = data['data']['mahasiswa']['mhs_nim'];
+        program_studi = data['data']['mahasiswa']['program_studi'];
+        tahun_akademik = data['data']['mahasiswa']['tahun_akademik'];
+        ta_judul = data['data']['mahasiswa']['ta_judul'];
+        dosen_nama = data['data']['mahasiswa']['dosen_nama'];
+
+        // Penanganan data dosen yang lebih aman
+        if (data['data']['mahasiswa']['dosen'] != null &&
+            (data['data']['mahasiswa']['dosen'] as List).isNotEmpty) {
+          // Pembimbing 1
+          pembimbing1_nama = data['data']['mahasiswa']['dosen'].length > 0
+              ? data['data']['mahasiswa']['dosen'][0]['dosen_nama']
+              : "-";
+          pembimbing1_nip = data['data']['mahasiswa']['dosen'].length > 0
+              ? data['data']['mahasiswa']['dosen'][0]['dosen_nip']
+              : "-";
+
+          // Pembimbing 2
+          pembimbing2_nama = data['data']['mahasiswa']['dosen'].length > 1
+              ? data['data']['mahasiswa']['dosen'][1]['dosen_nama']
+              : "-";
+          pembimbing2_nip = data['data']['mahasiswa']['dosen'].length > 1
+              ? data['data']['mahasiswa']['dosen'][1]['dosen_nip']
+              : "-";
+        } else {
+          // Default jika tidak ada data dosen
+          pembimbing1_nama = "-";
+          pembimbing1_nip = "-";
+          pembimbing2_nama = "-";
+          pembimbing2_nip = "-";
+        }
+
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+
+        // Optional: Set default values on error
+        pembimbing1_nama = "-";
+        pembimbing1_nip = "-";
+        pembimbing2_nama = "-";
+        pembimbing2_nip = "-";
+      });
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
+  // End of API Code
+
   // Variabel untuk menandakan apakah plotting sudah dilakukan atau belum
   bool isPlottingDone = false;
 
   @override
   Widget build(BuildContext context) {
+    final isAuthenticated = Provider.of<AuthProvider>(context).isAuthenticated;
+
+    if (!isAuthenticated) {
+      return Center(child: Text("You are not logged in."));
+    }
+
+    // Show loading indicator if data is still loading
+    if (isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          leadingWidth: 10, // Adjusted for better alignment
+          toolbarHeight: 10, // Adjusted height for better header presentation
+          backgroundColor: Colors.indigo[900],
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(), // Show loading spinner
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
         toolbarHeight: 10, // Adjusted height for better header presentation
-        backgroundColor: Colors.indigo[900],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -28,20 +132,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Transform.translate(
-                  offset: Offset(-25, 0), // Menggeser ke kiri sebesar 10 piksel
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.indigo[900],
-                    padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 15.0,
-                      color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromRGBO(40, 42, 116, 1),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
                 ),
@@ -51,7 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      'Adnan Bima Adhi N',
+                      mhsNama ?? "Loading...", // Ensure mhsNama is not null
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -71,28 +173,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // Titles
             Padding(
               padding:
-                  const EdgeInsets.only(left: 10.0), // Menggeser judul ke kanan
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  const EdgeInsets.only(left: 10.0), // Shift title to the right
+              child: mhsNama == null
+                  ? const Text(
+                      'Failed to load data',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (mhsNama == null)
+                          const Text(
+                            'Failed to load data',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          )
+                        else ...[
+                          Text(
+                            'Dashboard',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Text(
+                            'Tugas Akhir',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          // Additional data fields
+                        ],
+                      ],
                     ),
-                  ),
-                  Text(
-                    'Tugas Akhir',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
             ),
             SizedBox(height: 20),
 
@@ -106,21 +229,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextField(
-                          label: 'Nama', value: 'Adnan Bima Adhi Nugroho'),
+                      CustomTextField(label: 'Nama', value: mhsNama!),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIM', value: '43323203'),
-                      SizedBox(height: 10),
-                      CustomTextField(
-                          label: 'Program Studi',
-                          value: 'Teknologi Rekayasa Komputer'),
+                      CustomTextField(label: 'NIM', value: mhsNim!.toString()),
                       SizedBox(height: 10),
                       CustomTextField(
-                          label: 'Tahun Ajaran', value: '2024/2025'),
+                          label: 'Program Studi', value: program_studi!),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                          label: 'Tahun Ajaran', value: tahun_akademik!),
                       SizedBox(height: 10),
                       CustomTextField(
                           label: 'Judul Tugas Akhir',
-                          value: 'Sitama Mobile',
+                          value: ta_judul!,
                           maxLines: 2),
                     ],
                   ),
@@ -130,6 +251,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             SizedBox(height: 15),
             // Expansion for Data Pembimbing
+            
             CustomExpansionCard(
               title: 'Data Pembimbing',
               children: [
@@ -147,9 +269,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       SizedBox(height: 20),
                       CustomTextField(
                           label: 'Nama Pembimbing',
-                          value: 'Suko Tyas Pernanda, S.ST., M.Cs	'),
+                          value: pembimbing1_nama!),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIP', value: '1987654321'),
+                      CustomTextField(label: 'NIP', value: pembimbing1_nip!),
                       SizedBox(height: 40),
                       Text(
                         'Dosen Pembimbing 2',
@@ -159,9 +281,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       SizedBox(height: 20),
                       CustomTextField(
                           label: 'Nama Pembimbing',
-                          value: 'Wiktasari, S.T., M.Kom.	'),
+                          value: pembimbing2_nama!),
                       SizedBox(height: 10),
-                      CustomTextField(label: 'NIP', value: '1987654322'),
+                      CustomTextField(label: 'NIP', value: pembimbing2_nip!),
                     ],
                   ),
                 ),
@@ -171,7 +293,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 20),
 
             // Tampilkan peringatan jika plotting belum selesai
-            if (!isPlottingDone)
+            if (dosen_nama == null)
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0), // Jarak dari tepi layar
@@ -205,8 +327,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
-                        textAlign: TextAlign
-                            .center, // Pusatkan teks dalam `Text` widget
+                        textAlign:
+                            TextAlign.center, // Pusatkan teks dalam Text widget
                       ),
                       SizedBox(height: 4),
                       Text(
@@ -215,8 +337,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: Colors.black,
                           fontSize: 14,
                         ),
-                        textAlign: TextAlign
-                            .center, // Pusatkan teks dalam `Text` widget
+                        textAlign:
+                            TextAlign.center, // Pusatkan teks dalam Text widget
                       ),
                     ],
                   ),

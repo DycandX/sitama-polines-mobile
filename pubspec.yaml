@@ -29,7 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   file_picker: ^8.1.4
-  provider: ^5.0.0
+  provider: ^6.1.2
   flutter:
     sdk: flutter
 
@@ -41,6 +41,16 @@ dependencies:
   go_router: ^10.1.2
   sliding_clipped_nav_bar: ^3.1.0+4
   # sliding_clipped_nav_bar: ^3.1.0+4
+  http: ^1.2.2
+  shared_preferences: ^2.3.3
+  intl: ^0.20.1
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.1
+  encrypt: ^5.0.3
+  crypto: ^3.0.6
+  flutter_pdfview: ^1.3.4
+  dio: ^5.7.0
+  pdfx: ^2.8.0
 
 dev_dependencies:
   flutter_test:

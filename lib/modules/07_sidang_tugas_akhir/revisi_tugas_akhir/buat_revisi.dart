@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/revisi_tugas_akhir/revisi_controller.dart';
+import 'package:pbl_sitama/services/api_service.dart';
+import 'package:provider/provider.dart';
 
 
 class BuatRevisiScreen extends StatefulWidget {
@@ -17,9 +20,39 @@ class _BuatRevisiScreenState extends State<BuatRevisiScreen> {
   String title = '';
   String description = '';
   String? selectedDosen;
+  String? mhsNama;
+  String? penguji1;
+  String? penguji2;
+  String? penguji3;
 
-  // List of available dosen (lecturers)
-  final List<String> dosenList = ['Azka', 'Zulvikar', 'Dewa'];
+  List<String> dosenList = []; // Updated dynamically
+
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+
+      setState(() {
+        mhsNama = data['data']['mahasiswa']['mhs_nama'];
+        penguji1 = data['data']['mahasiswa']['penguji'][0]['penguji_nama'];
+        penguji2 = data['data']['mahasiswa']['penguji'][1]['penguji_nama'];
+        penguji3 = data['data']['mahasiswa']['penguji'][2]['penguji_nama'];
+        dosenList = [penguji1!, penguji2!, penguji3!]; 
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -130,8 +163,6 @@ class _BuatRevisiScreenState extends State<BuatRevisiScreen> {
                           onSaved: (value) => title = value!,
                         ),
                         const SizedBox(height: 10),
-
-                        // Dropdown for selecting Dosen
                         DropdownButtonFormField<String>(
                           value: selectedDosen,
                           decoration: InputDecoration(
@@ -160,7 +191,6 @@ class _BuatRevisiScreenState extends State<BuatRevisiScreen> {
                                 : null;
                           },
                         ),
-
                         const SizedBox(height: 10),
                         GestureDetector(
                           onTap: _pickFile,
