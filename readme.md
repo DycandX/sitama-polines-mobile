@@ -15,7 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-#If you want to clone this project, do the following command in the terminal
+# If you want to clone this project, do the following command in the terminal
 
 - git clone <url>
 - flutter clean
