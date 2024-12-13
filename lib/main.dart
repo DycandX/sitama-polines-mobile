@@ -19,10 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Go Router Example',
-      debugShowCheckedModeBanner: false,
-      routerConfig: AppNavigation.router,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Go Router Example',
+        debugShowCheckedModeBanner: false,
+        routerConfig: AppNavigation.router,
+      ),
     );
   }
 }

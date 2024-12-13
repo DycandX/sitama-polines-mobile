@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:http/http.dart';
 import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_controller.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_navigation.dart';
 import '../../services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -58,12 +60,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Navigate based on user type
         if (role.contains("dosen")) {
-          // Navigate to JadwalSidangPage for lecturers
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => JadwalSidangPage()),
-            (route) => false,
-          );
+          context.go('/home');
         } else if (role.contains("mahasiswa")){
           // Navigate to homeMahasiswaScreen for students
           Navigator.pushAndRemoveUntil(

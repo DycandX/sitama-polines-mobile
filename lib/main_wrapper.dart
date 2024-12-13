@@ -7,6 +7,7 @@ class MainWrapper extends StatefulWidget {
     required this.navigationShell,
     super.key,
   });
+
   final StatefulNavigationShell navigationShell;
 
   @override
@@ -17,31 +18,30 @@ class _MainWrapperState extends State<MainWrapper> {
   int selectedIndex = 0;
 
   void _goBranch(int index) {
+    print('Navigating to branch $index');
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-        
-      // ),
+    // Gunakan GoRouterState untuk mendapatkan lokasi
+    final location = GoRouterState.of(context).uri.toString();
 
+    // Memeriksa apakah lokasi saat ini adalah /welcomepage
+    bool showBottomNav = location != '/welcomepage' && !location.startsWith('/welcomepage/');
+
+    return Scaffold(
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         child: widget.navigationShell,
       ),
-      // floatingActionButton: FloatingActionButton(
-      //     onPressed: () {
-      //       context.push(context.namedLocation('Player'));
-      //     },
-      //     backgroundColor: Colors.deepPurpleAccent,
-      //     child: const Icon(Icons.play_arrow)),
-      bottomNavigationBar: SlidingClippedNavBar(
+      bottomNavigationBar: showBottomNav
+          ? SlidingClippedNavBar(
         backgroundColor: Colors.white,
         onButtonPressed: (index) {
           setState(() {
@@ -70,7 +70,8 @@ class _MainWrapperState extends State<MainWrapper> {
             title: 'Profile',
           ),
         ],
-      ),
+      )
+          : null, // Jangan tampilkan bottom navigation di /welcomepage
     );
   }
 }

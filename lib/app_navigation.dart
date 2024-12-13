@@ -7,6 +7,8 @@ import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidan
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
 
+import 'modules/01_launch/welcome_page.dart';
+
 
 // import 'package:go_router_example/views/player/player_view.dart';
 // import 'package:go_router_example/views/settings/settings_view.dart';
@@ -121,10 +123,12 @@ import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart'
 class AppNavigation {
   AppNavigation._();
 
-  static String initial = "/home";
+  static String initial = "/welcomepage";
 
   // Private navigators
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _shellNavigatorWelcome =
+      GlobalKey<NavigatorState>(debugLabel: 'shellWelcome');
   static final _shellNavigatorHome =
       GlobalKey<NavigatorState>(debugLabel: 'shellHome');
   static final _shellNavigatorBimbingan =
@@ -211,6 +215,17 @@ class AppNavigation {
                 name: "Profile",
                 builder: (BuildContext context, GoRouterState state) =>
                     ProfilePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWelcome, // Unique key
+            routes: <RouteBase>[
+              GoRoute(
+                path: "/welcomepage",
+                name: "welcomepage",
+                builder: (BuildContext context, GoRouterState state) =>
+                    WelcomePage(),
               ),
             ],
           ),
