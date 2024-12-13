@@ -342,7 +342,7 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
                     ),
                   ),
                   child: const Text(
-                    "Cetak Lembar Persetujuan",
+                    "Cetak Lembar Pengesahan",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/api_service.dart';
@@ -147,6 +148,8 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
             selectedFile = null;
           });
           _showDialog('Berhasil', 'Judul Tugas Akhir berhasil disimpan.');
+
+          Navigator.pop(context);
         } else {
           final respStr = await response.stream.bytesToString();
           _showDialog('Gagal', 'Error: $respStr');

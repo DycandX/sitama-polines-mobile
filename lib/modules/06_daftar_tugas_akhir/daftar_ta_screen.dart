@@ -208,7 +208,7 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
                 ],
               ),
             ),
-            if (allVerified)
+            if (allVerified && dataSidang == null)
               ElevatedButton(
                 onPressed: () {
                   if(dataSidang == null) {

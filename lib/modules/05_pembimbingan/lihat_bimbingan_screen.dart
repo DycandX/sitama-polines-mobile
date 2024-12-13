@@ -45,6 +45,7 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
         mhsNim = data['data']['mhs_nim'];
         pembimbing1_nama = data['data']['dosen'][0]['dosen_nama'];
         pembimbing2_nama = data['data']['dosen'][1]['dosen_nama'];
+        masterJumlah = data['masterJumlah'];
 
         pembimbing_count_1 = data['pembimbing1_count'];
         pembimbing_count_2 = data['pembimbing2_count'];
@@ -152,11 +153,11 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                     pembimbing_ke: "Pembimbing ke 1",
                     statusText: getStatusText(
                       pembimbing_count_1,
-                      pembimbing_count_1_total,
+                      masterJumlah,
                     ),
                     statusColor: getStatusColor(
                       pembimbing_count_1,
-                      pembimbing_count_1_total,
+                      masterJumlah,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -174,11 +175,11 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                     pembimbing_ke: "Pembimbing ke 2",
                     statusText: getStatusText(
                       pembimbing_count_2,
-                      pembimbing_count_2_total,
+                      masterJumlah,
                     ),
                     statusColor: getStatusColor(
                       pembimbing_count_2,
-                      pembimbing_count_2_total,
+                      masterJumlah,
                     ),
                     onTap: () {
                       Navigator.push(

@@ -138,12 +138,6 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DaftarTaScreen(),
-                    ),
-                  );
                 },
                 child: const Text("OK"),
               ),

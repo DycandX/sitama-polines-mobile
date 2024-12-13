@@ -46,15 +46,18 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
   }
   
   final TextEditingController _taInputController = TextEditingController();
+  final TextEditingController _mhsInputController = TextEditingController();
 
   @override
   void dispose() {
     _taInputController.dispose();
+    _mhsInputController.dispose();
     super.dispose();
   }
 
   void _input(String string) async {
     final taJudul = _taInputController.text.trim();
+    final mhs_nim = _mhsInputController.text.trim();
 
     if (taJudul.isEmpty) {
       showDialog(
@@ -89,6 +92,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
         },
         body: jsonEncode({
           'judul_ta': taJudul,
+          'mhs_nim': mhs_nim,
         }),
       );
 
@@ -296,6 +300,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                     ),
                     child: TextField(
                       maxLines: 5,
+                      controller: _mhsInputController,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding:

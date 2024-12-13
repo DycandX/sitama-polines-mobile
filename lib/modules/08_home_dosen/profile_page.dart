@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../02_login/login_page.dart';
@@ -202,13 +203,13 @@ class ProfilePage extends StatelessWidget {
     // Clear token from SharedPreferences (or other storage)
     SharedPreferences.setMockInitialValues({});
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs
-        .remove('token'); // assuming you stored the token under the key 'token'
+    await prefs.remove('token'); // assuming you stored the token under the key 'token'
 
+    context.go('/login');
     // Redirect to the login screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage())
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => LoginPage())
+    // );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pbl_sitama/main_wrapper.dart';
+import 'package:pbl_sitama/modules/02_login/login_page.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
@@ -129,6 +130,8 @@ class AppNavigation {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _shellNavigatorWelcome =
       GlobalKey<NavigatorState>(debugLabel: 'shellWelcome');
+  static final _shellNavigatorLogin =
+      GlobalKey<NavigatorState>(debugLabel: 'shellLogin');
   static final _shellNavigatorHome =
       GlobalKey<NavigatorState>(debugLabel: 'shellHome');
   static final _shellNavigatorBimbingan =
@@ -229,7 +232,17 @@ class AppNavigation {
               ),
             ],
           ),
-
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorLogin, // Unique key
+            routes: <RouteBase>[
+              GoRoute(
+                path: "/login",
+                name: "login",
+                builder: (BuildContext context, GoRouterState state) =>
+                    LoginPage(),
+              ),
+            ],
+          ),
           /// Branch Settings
         ],
       ),
