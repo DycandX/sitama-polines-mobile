@@ -206,11 +206,9 @@ class ProfilePage extends StatelessWidget {
         .remove('token'); // assuming you stored the token under the key 'token'
 
     // Redirect to the login screen
-    Navigator.pushAndRemoveUntil(
+    Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) =>
-          false, // This ensures the back button won't take you back to the previous screen
+      MaterialPageRoute(builder: (context) => LoginPage())
     );
   }
 }

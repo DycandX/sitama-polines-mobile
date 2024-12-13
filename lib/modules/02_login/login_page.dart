@@ -63,10 +63,9 @@ class _LoginPageState extends State<LoginPage> {
           context.go('/home');
         } else if (role.contains("mahasiswa")){
           // Navigate to homeMahasiswaScreen for students
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => homeMahasiswaScreen()),
-            (route) => false,
           );
         }
       } else {
