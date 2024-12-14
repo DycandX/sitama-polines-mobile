@@ -1,37 +1,129 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/dataMhs_ta.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../services/api_service.dart';
+import 'daftar_bimbingan_controller.dart';
 
 class DaftarBimbingan extends StatefulWidget {
-  const DaftarBimbingan({super.key});
+  final int taId;
+
+  const DaftarBimbingan({Key? key, required this.taId}) : super(key: key);
 
   @override
   State<DaftarBimbingan> createState() => _DaftarBimbinganState();
 }
 
 class _DaftarBimbinganState extends State<DaftarBimbingan> {
-  final List<Map<String, dynamic>> guidanceList = [
-    {"title": "Bimbingan 1", "status": "Diverifikasi", "isVerified": true},
-    {"title": "Bimbingan 2", "status": "Diverifikasi", "isVerified": true},
-    {"title": "Bimbingan 3", "status": "Diverifikasi", "isVerified": true},
-    {"title": "Bimbingan 4", "status": "Diverifikasi", "isVerified": true},
-    {"title": "Bimbingan 5", "status": "Diverifikasi", "isVerified": true},
-    {
-      "title": "Bimbingan 6",
-      "status": "Belum Diverifikasi",
-      "isVerified": false
-    },
-    {
-      "title": "Bimbingan 7",
-      "status": "Belum Diverifikasi",
-      "isVerified": false
-    },
-    {
-      "title": "Bimbingan 8",
-      "status": "Belum Diverifikasi",
-      "isVerified": false
-    },
-  ];
+  // final List<Map<String, dynamic>> guidanceList = [
+  //   {"title": "Bimbingan 1", "status": "Diverifikasi", "isVerified": true},
+  //   {"title": "Bimbingan 2", "status": "Diverifikasi", "isVerified": true},
+  //   {"title": "Bimbingan 3", "status": "Diverifikasi", "isVerified": true},
+  //   {"title": "Bimbingan 4", "status": "Diverifikasi", "isVerified": true},
+  //   {"title": "Bimbingan 5", "status": "Diverifikasi", "isVerified": true},
+  //   {
+  //     "title": "Bimbingan 6",
+  //     "status": "Belum Diverifikasi",
+  //     "isVerified": false
+  //   },
+  //   {
+  //     "title": "Bimbingan 7",
+  //     "status": "Belum Diverifikasi",
+  //     "isVerified": false
+  //   },
+  //   {
+  //     "title": "Bimbingan 8",
+  //     "status": "Belum Diverifikasi",
+  //     "isVerified": false
+  //   },
+  // ];
+  String? userName;
+  String? urutan;
+  bool isLoading = true;
+  final List<Map<String, dynamic>> guidanceList = [];
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token, widget.taId);
+      setState(() {
+        // Reset daftar mahasiswa sebelum diisi ulang
+        // guidanceList.clear();
+
+        // Ambil data log mahasiswa dari response API
+        var logCollect = data['data']['bimbLog'] as List? ?? [];
+        urutan = data['data']['mahasiswa']['urutan'] ?? 'default_value';
+        for (var logItem in logCollect) {
+          if (logItem is Map<String, dynamic>) {
+            String title = logItem['bimb_judul'] ?? "Judul Tidak Ditemukan";
+            String status = logItem['bimb_status'] == 1 ? "Diverifikasi" : "Belum Diverifikasi";
+            bool isVerified = logItem['bimb_status'] == 1;
+
+            // Tambahkan data ke guidanceList
+            guidanceList.add({
+              "title": title,
+              "status": status,
+              "isVerified": isVerified,
+            });
+          }
+        }
+
+        userName = Provider.of<AuthProvider>(context).userName;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error: $e');
+    }
+    print('urutan : ${urutan}');
+    print('API Response: ${guidanceList}');
+  }
+
+  Future<void> sendPostRequest() async {
+    final String url = '${Config.baseUrl}setujui-sidang-akhir/${widget.taId}';
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',  // Pastikan token ada di sini
+        },
+        body: jsonEncode(<String, dynamic>{'urutan': urutan}),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle successful response
+        print('Response data: ${response.body}');
+      } else {
+        // Handle error response
+        print(urutan);
+        print(url);
+        print('Failed to send data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +160,17 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
-                      child: Text(
-                        'WIKTASARI , S.T., M.KOM.',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w100,
-                          color: Colors.black,
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 150), // Atur lebar maksimum
+                        child: Text(
+                          userName!,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -94,7 +190,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Daftar Bimbingan Saifullah",
+                    "Daftar Bimbingan",
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -171,9 +267,11 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
             Padding(
               padding: const EdgeInsets.all(20),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  sendPostRequest();
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

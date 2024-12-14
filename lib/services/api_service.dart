@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 
 class AuthProvider with ChangeNotifier {
   String? _token;
+  String? _userName;
 
   String? get token => _token;
+  String? get userName => _userName;
 
   bool get isAuthenticated => _token != null;
 
   void setToken(String token) {
     _token = token;
     notifyListeners(); // Notify listeners of token changes
+  }
+
+  void setUser(String userName) {
+    _userName = userName;
+    notifyListeners();
   }
 
   void clearToken() {

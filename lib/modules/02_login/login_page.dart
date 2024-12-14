@@ -51,13 +51,16 @@ class _LoginPageState extends State<LoginPage> {
         var data = jsonDecode(response.body);
         final token = data['token'];
         final role = data['role'];
+        final userName = data['user']['name'];
 
         // Print login success for debugging
         print('Login successfully');
         print('Token: $token');
+        print('User  Name: $userName');
 
         // Set token using Provider
         Provider.of<AuthProvider>(context, listen: false).setToken(token);
+        Provider.of<AuthProvider>(context, listen: false).setUser(userName);
 
         // Navigate based on user type
         if (role.contains("dosen")) {

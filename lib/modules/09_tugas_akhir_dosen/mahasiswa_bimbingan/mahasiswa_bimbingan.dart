@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
@@ -15,12 +17,14 @@ class Mahasiswa {
   final String? nama;
   final String? judulTugas;
   final int? progress;
+  final int? taId;
 
   Mahasiswa({
     required this.nim,
     required this.nama,
     required this.judulTugas,
     required this.progress,
+    required this.taId,
   });
 }
 
@@ -94,7 +98,6 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
   // ];
 
   // API fetch data
-
   bool isLoading = true;
   final List<Mahasiswa> mahasiswas = [];
   Future<void> loadMahasiswaData(String token) async {
@@ -118,6 +121,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
               nama: logItem['mhs_nama'],
               judulTugas: logItem['ta_judul'],
               progress: int.parse(logItem['jml_bimbingan_valid']),
+              taId: logItem['ta_id'],
             ));
           }
         }
@@ -220,7 +224,9 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                DaftarBimbingan(),
+                                                DaftarBimbingan(
+                                                  taId: mahasiswa.taId!,
+                                                ),
                                           ),
                                         );
                                       },

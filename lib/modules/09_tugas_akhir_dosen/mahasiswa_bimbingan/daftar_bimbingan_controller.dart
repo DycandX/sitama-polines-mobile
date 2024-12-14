@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import '../../../services/api_service.dart';
 
 class ApiService {
-  static Future<Map<String, dynamic>> fetchMahasiswa(String token) async {
-    final url = Uri.parse(
-        '${Config.baseUrl}mhsbimbingan/1'); // Replace with your endpoint
+  static Future<Map<String, dynamic>> fetchMahasiswa(String token, int taId) async {
+    final url = Uri.parse('${Config.baseUrl}mhsbimbingan/$taId'); // Replace with your endpoint
+    print('Fetching data from URL: $url'); // Print UR
 
     try {
       final response = await http.get(

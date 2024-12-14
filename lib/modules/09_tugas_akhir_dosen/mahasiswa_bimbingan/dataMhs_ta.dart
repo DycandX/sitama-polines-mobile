@@ -33,7 +33,7 @@ class _DatamhsTaState extends State<DatamhsTa> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DaftarBimbingan()),
+                              builder: (context) => DaftarBimbingan(taId: 1,)),
                         );
                       },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
