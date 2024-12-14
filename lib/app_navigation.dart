@@ -134,6 +134,8 @@ class AppNavigation {
       GlobalKey<NavigatorState>(debugLabel: 'shellLogin');
   static final _shellNavigatorHome =
       GlobalKey<NavigatorState>(debugLabel: 'shellHome');
+  static final _shellNavigatorHomeMahasiwa =
+      GlobalKey<NavigatorState>(debugLabel: 'shellHomeMahasiswa');
   static final _shellNavigatorBimbingan =
       GlobalKey<NavigatorState>(debugLabel: 'shellBimbingan'); // New key
   static final _shellNavigatorMenguji =
@@ -240,6 +242,17 @@ class AppNavigation {
                 name: "login",
                 builder: (BuildContext context, GoRouterState state) =>
                     LoginPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorHomeMahasiwa, // Unique key
+            routes: <RouteBase>[
+              GoRoute(
+                path: "/home_mahasiswa",
+                name: "home_mahasiswa",
+                builder: (BuildContext context, GoRouterState state) =>
+                    homeMahasiswaScreen(),
               ),
             ],
           ),

@@ -32,7 +32,7 @@ class _MainWrapperState extends State<MainWrapper> {
     final location = GoRouterState.of(context).uri.toString();
 
     // Memeriksa apakah lokasi saat ini adalah /welcomepage
-    bool showBottomNav = !location.startsWith('/welcomepage') && !location.startsWith('/login');
+    bool showBottomNav = !location.startsWith('/welcomepage') && !location.startsWith('/login') && !location.startsWith('/home_mahasiswa');
 
     return Scaffold(
       body: SizedBox(

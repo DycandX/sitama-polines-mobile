@@ -205,7 +205,7 @@ class ProfilePage extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token'); // assuming you stored the token under the key 'token'
 
-    context.go('/login');
+    context.pushReplacement('/login');
     // Redirect to the login screen
     // Navigator.push(
     //   context,
@@ -213,3 +213,4 @@ class ProfilePage extends StatelessWidget {
     // );
   }
 }
+

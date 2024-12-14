@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pbl_sitama/app_navigation.dart';
 import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
 import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_ta_input.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
@@ -434,9 +436,6 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
     await prefs
         .remove('token'); // assuming you stored the token under the key 'token'
     // Redirect to the login screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
+    context.pushReplacement('/login');
   }
 }

@@ -61,13 +61,10 @@ class _LoginPageState extends State<LoginPage> {
 
         // Navigate based on user type
         if (role.contains("dosen")) {
-
+          context.go('/home');
         } else if (role.contains("mahasiswa")){
           // Navigate to homeMahasiswaScreen for students
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => homeMahasiswaScreen()),
-          );
+          context.go('/home_mahasiswa');
         }
       } else {
         // Show error dialog if login fails
