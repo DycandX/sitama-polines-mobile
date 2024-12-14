@@ -94,7 +94,6 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
   // ];
 
   // API fetch data
-  String? pembimbing1_nama;
 
   bool isLoading = true;
   final List<Mahasiswa> mahasiswas = [];
@@ -104,8 +103,6 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
 
       setState(() {
         // Initialize default values for the fields
-
-        pembimbing1_nama = data['data']['ta_mahasiswa']['dosen_nama'];
 
         // Reset daftar mahasiswa sebelum diisi ulang
         mahasiswas.clear();
@@ -132,6 +129,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
       });
       print('Error: $e');
     }
+    print('API Response: ${mahasiswas}');
   }
 
   @override
