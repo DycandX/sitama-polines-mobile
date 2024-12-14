@@ -326,7 +326,8 @@ class _DaftarBimbingan2State extends State<DaftarBimbingan2> {
                                   ],
                                 ],
                               ),
-                              trailing: ElevatedButton(
+                              trailing: revisi['file'] != null
+                                  ? ElevatedButton(
                                 onPressed: () {
                                   print('${Config.baseUrl}${revisi['file']}');
                                   final String pdfUrl = '${Config.baseUrl}${revisi['file']}';
@@ -348,7 +349,9 @@ class _DaftarBimbingan2State extends State<DaftarBimbingan2> {
                                   'Lihat',
                                   style: TextStyle(color: Colors.white),
                                 ),
-                              ),
+                              )
+                                  : SizedBox.shrink(),  // This hides the button if revisi['file'] is null
+
                             ),
                           ),
                         );
