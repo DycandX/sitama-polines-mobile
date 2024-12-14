@@ -4,13 +4,17 @@ import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
 import 'package:pbl_sitama/profile_header.dart';
+import 'package:provider/provider.dart';
+
+import '../../../services/api_service.dart';
+import 'mahasiswa_bimbingan_controller.dart';
 
 // Model untuk mewakili data mahasiswa
 class Mahasiswa {
-  final int nim;
-  final String nama;
-  final String judulTugas;
-  final int progress;
+  final int? nim;
+  final String? nama;
+  final String? judulTugas;
+  final int? progress;
 
   Mahasiswa({
     required this.nim,
@@ -66,28 +70,81 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
   }
 
   // Daftar mahasiswa (data dummy)
-  final List<Mahasiswa> mahasiswas = [
-    Mahasiswa(
-        nim: 123,
-        nama: 'Saifullah',
-        judulTugas: 'Cara Mengirim Januar Tanpa Rusak Di Perjalanan',
-        progress: 5),
-    Mahasiswa(
-        nim: 1234,
-        nama: 'Nawasena',
-        judulTugas: 'Menanam Mangrove Dengan Benar',
-        progress: 8),
-    Mahasiswa(
-        nim: 12,
-        nama: 'Nawasena',
-        judulTugas: 'Menanam Mangrove Dengan Benar',
-        progress: 8),
-    Mahasiswa(
-        nim: 1234,
-        nama: 'Nawasena',
-        judulTugas: 'Menanam Mangrove Dengan Benar',
-        progress: 8),
-  ];
+  // final List<Mahasiswa> mahasiswas = [
+  //   Mahasiswa(
+  //       nim: 123,
+  //       nama: 'Saifullah',
+  //       judulTugas: 'Cara Mengirim Januar Tanpa Rusak Di Perjalanan',
+  //       progress: 5),
+  //   Mahasiswa(
+  //       nim: 1234,
+  //       nama: 'Nawasena',
+  //       judulTugas: 'Menanam Mangrove Dengan Benar',
+  //       progress: 8),
+  //   Mahasiswa(
+  //       nim: 12,
+  //       nama: 'Nawasena',
+  //       judulTugas: 'Menanam Mangrove Dengan Benar',
+  //       progress: 8),
+  //   Mahasiswa(
+  //       nim: 1234,
+  //       nama: 'Nawasena',
+  //       judulTugas: 'Menanam Mangrove Dengan Benar',
+  //       progress: 8),
+  // ];
+
+  // API fetch data
+  String? pembimbing1_nama;
+
+  bool isLoading = true;
+  final List<Mahasiswa> mahasiswas = [];
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final data = await ApiService.fetchMahasiswa(token);
+
+      setState(() {
+        // Initialize default values for the fields
+
+        pembimbing1_nama = data['data']['ta_mahasiswa']['dosen_nama'];
+
+        // Reset daftar mahasiswa sebelum diisi ulang
+        mahasiswas.clear();
+
+        // Ambil data log mahasiswa dari response API
+        var logCollect = data['data']['ta_mahasiswa'] as List? ?? [];
+
+        // Isi daftar mahasiswa dari data log
+        for (var logItem in logCollect) {
+          if (logItem is Map<String, dynamic>) {
+            mahasiswas.add(Mahasiswa(
+              nim: logItem['mhs_nim'],
+              nama: logItem['mhs_nama'],
+              judulTugas: logItem['ta_judul'],
+              progress: int.parse(logItem['jml_bimbingan_valid']),
+            ));
+          }
+        }
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token);
+    } else {
+      print('User is not authenticated');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +254,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                       children: [
                                         Icon(
                                           Icons.circle,
-                                          color: mahasiswa.progress == 8
+                                          color: (mahasiswa.progress != null && mahasiswa.progress == 8)
                                               ? Colors.green
                                               : Colors.yellow,
                                           size: 18,
