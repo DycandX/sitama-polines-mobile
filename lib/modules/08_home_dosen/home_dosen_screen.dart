@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen.dart';
 import 'package:pbl_sitama/profile_header.dart';
 class JadwalSidangPage extends StatefulWidget {
   const JadwalSidangPage({super.key});

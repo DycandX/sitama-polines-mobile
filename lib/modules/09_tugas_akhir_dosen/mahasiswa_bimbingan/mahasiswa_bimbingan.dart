@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen_pembimbing.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen.dart';
 import 'package:pbl_sitama/profile_header.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +18,7 @@ class Mahasiswa {
   final String? judulTugas;
   final int? progress;
   final int? taId;
+  final int? verified;
 
   Mahasiswa({
     required this.nim,
@@ -25,6 +26,7 @@ class Mahasiswa {
     required this.judulTugas,
     required this.progress,
     required this.taId,
+    required this.verified,
   });
 }
 
@@ -99,6 +101,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
 
   // API fetch data
   bool isLoading = true;
+  int? masterJumlah;
   final List<Mahasiswa> mahasiswas = [];
   Future<void> loadMahasiswaData(String token) async {
     try {
@@ -122,9 +125,11 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
               judulTugas: logItem['ta_judul'],
               progress: int.parse(logItem['jml_bimbingan_valid']),
               taId: logItem['ta_id'],
+              verified: logItem['verified'],
             ));
           }
         }
+        masterJumlah = data['data']['masterJumlah'];
         isLoading = false;
       });
     } catch (e) {
@@ -178,6 +183,11 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                     ),
                   ),
                 ),
+                if (isLoading)
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                if(!isLoading)
                 Expanded(
                   child: ListView.builder(
                     itemCount: mahasiswas.length,
@@ -219,24 +229,36 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                       ),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
+                                      onPressed: () async {
+                                        // Navigasi ke halaman DaftarBimbingan dan tunggu sampai halaman kembali
+                                        final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                DaftarBimbingan(
-                                                  taId: mahasiswa.taId!,
-                                                ),
+                                            builder: (context) => DaftarBimbingan(
+                                              taId: mahasiswa.taId!,
+                                              verified: mahasiswa.verified!,
+                                              progress: mahasiswa.progress!,
+                                              masterJumlah: masterJumlah!,
+                                            ),
                                           ),
                                         );
+
+                                        // Periksa apakah data berhasil kembali dan lakukan refresh
+                                        if (result != null) {
+                                          setState(() {
+                                            // Panggil kembali data mahasiswa setelah kembali
+                                            final token = Provider.of<AuthProvider>(context, listen: false).token;
+                                            if (token != null) {
+                                              loadMahasiswaData(token);  // Memanggil ulang API untuk refresh data
+                                            }
+                                          });
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
+                                          borderRadius: BorderRadius.circular(12.0),
                                         ),
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 50, 111, 233),
+                                        backgroundColor: const Color.fromARGB(255, 50, 111, 233),
                                       ),
                                       child: Text(
                                         "Lihat",
@@ -246,7 +268,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                                 SizedBox(height: 10),
@@ -265,7 +287,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                         ),
                                         SizedBox(width: 5),
                                         Text(
-                                          '${mahasiswa.progress}/8',
+                                          '${mahasiswa.progress}/${masterJumlah}',
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       ],

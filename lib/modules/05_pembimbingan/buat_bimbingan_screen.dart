@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
-import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/api_service.dart';
@@ -95,7 +92,6 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
   final TextEditingController _judulController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _tglController = TextEditingController();
-  final TextEditingController _draftController = TextEditingController();
 
 
   @override

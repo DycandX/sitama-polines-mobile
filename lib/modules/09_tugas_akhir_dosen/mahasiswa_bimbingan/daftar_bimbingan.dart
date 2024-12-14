@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/dataMhs_ta.dart';
@@ -11,8 +12,16 @@ import 'daftar_bimbingan_controller.dart';
 
 class DaftarBimbingan extends StatefulWidget {
   final int taId;
+  final int verified;
+  final int progress;
+  final int masterJumlah;
 
-  const DaftarBimbingan({Key? key, required this.taId}) : super(key: key);
+  const DaftarBimbingan({Key? key,
+    required this.taId,
+    required this.verified,
+    required this.progress,
+    required this.masterJumlah,
+  }) : super(key: key);
 
   @override
   State<DaftarBimbingan> createState() => _DaftarBimbinganState();
@@ -58,13 +67,20 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
         for (var logItem in logCollect) {
           if (logItem is Map<String, dynamic>) {
             String title = logItem['bimb_judul'] ?? "Judul Tidak Ditemukan";
+            String desc = logItem['bimb_desc'] ?? "Tidak Ada Deskripsi";
+            String downloadurl = logItem['download_url'] ?? "";
             String status = logItem['bimb_status'] == 1 ? "Diverifikasi" : "Belum Diverifikasi";
+            int bimbLogId = logItem['bimbingan_log_id'] ?? 0;
             bool isVerified = logItem['bimb_status'] == 1;
 
             // Tambahkan data ke guidanceList
             guidanceList.add({
               "title": title,
+              'desc': desc,
               "status": status,
+              "downloadUrl": downloadurl,
+              "status": status,
+              "bimbLogId": bimbLogId,
               "isVerified": isVerified,
             });
           }
@@ -146,11 +162,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MahasiswaBimbingan()),
-                        );
+                        Navigator.pop(context, 'refresh');
                       },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -163,7 +175,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                       child: Container(
                         constraints: BoxConstraints(maxWidth: 150), // Atur lebar maksimum
                         child: Text(
-                          userName!,
+                          userName ?? "Loading...",
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             fontSize: 14.0,
@@ -196,11 +208,15 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Poppins'),
                   ),
-                  Text("8/8", style: TextStyle(color: Colors.grey)),
+                  Text("${widget.progress}/${widget.masterJumlah}", style: TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
             // List of Bimbingan
+            if(isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              ),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -236,11 +252,31 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                       ),
                       trailing: ElevatedButton(
                         onPressed: () {
+                          String title = guidance["title"];
+                          String desc = guidance['desc'];
+                          String downloadUrl = guidance['downloadUrl'];
+                          String status = guidance['status'];
+                          int bimbLogId = guidance['bimbLogId'];
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DatamhsTa()),
-                          );
+                              builder: (context) => DatamhsTa(
+                                title: title,
+                                desc: desc,
+                                downloadUrl: downloadUrl,
+                                status: status,
+                                bimbLogId: bimbLogId,
+                              ),
+                            ),
+                          ).then((result) {
+                            if (result == 'refresh') {
+                              final token = Provider.of<AuthProvider>(context, listen: false).token;
+                              if (token != null) {
+                                loadMahasiswaData(token);  // Memanggil ulang data jika kembali dengan refresh
+                              }
+                            }
+                          });
+
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -264,7 +300,9 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
               ),
             ),
             // Approve Button at the Bottom
-            Padding(
+            widget.verified == 1
+            ? SizedBox()
+            : Padding(
               padding: const EdgeInsets.all(20),
               child: ElevatedButton(
                 onPressed: () {
