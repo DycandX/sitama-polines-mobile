@@ -59,7 +59,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
       final data = await ApiService.fetchMahasiswa(token, widget.taId);
       setState(() {
         // Reset daftar mahasiswa sebelum diisi ulang
-        // guidanceList.clear();
+        guidanceList.clear();
 
         // Ambil data log mahasiswa dari response API
         var logCollect = data['data']['bimbLog'] as List? ?? [];
