@@ -170,15 +170,18 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    userName!,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 18,
-                                      fontWeight:
-                                          FontWeight.bold, // Poppins Bold 15
-                                      color: Colors.white,
-                                    ),
+                                  Container(
+                                    width: 200,
+                                    child: Text(
+                                      userName!,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight:
+                                        FontWeight.bold, // Poppins Bold 15
+                                        color: Colors.white,
+                                      ),
+                                    )
                                   ),
                                   SizedBox(height: 4),
                                   Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pbl_sitama/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -173,6 +174,6 @@ class _ProfilePageState extends State<ProfilePage> {
     await prefs.remove('userName'); // Hapus nama pengguna
     await prefs.remove('token');    // Hapus token jika ada
 
-    Navigator.pushReplacementNamed(context, '/login');
+    context.pushReplacement('/login');
   }
 }

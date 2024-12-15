@@ -187,9 +187,11 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         leadingWidth: 10,
         toolbarHeight: 10,
+        backgroundColor: const Color.fromRGBO(40, 42, 116, 1),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -220,12 +222,16 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
                 Row(
                   children: [
                     SizedBox(width: 30),
-                    Text(
-                      userName ?? "Loading...", // Ensure mhsNama is not null
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Container(
+                        width: 150,
+                        child: Text(
+                          userName ?? "Loading...", // Ensure mhsNama is not null
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(

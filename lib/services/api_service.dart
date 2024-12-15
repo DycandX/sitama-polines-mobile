@@ -26,9 +26,5 @@ class AuthProvider with ChangeNotifier {
 }
 
 class Config {
-<<<<<<< Updated upstream
   static const String baseUrl = 'http://192.168.1.22/sitama-new/public/api/v1/';
-=======
-  static const String baseUrl = 'http://192.168.220.1/sitama-new/public/api/v1/';
->>>>>>> Stashed changes
 }

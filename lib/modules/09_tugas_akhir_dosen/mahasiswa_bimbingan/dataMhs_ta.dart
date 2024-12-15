@@ -62,6 +62,7 @@ class _DatamhsTaState extends State<DatamhsTa> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(0, 40, 20, 0),
         child: Column(
@@ -129,11 +130,12 @@ class _DatamhsTaState extends State<DatamhsTa> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15,0,0,0),
                   child: Card(
-                    elevation: 2,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    shape: RoundedRectangleBorder(
+                      elevation: 2,
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    color: const Color.fromARGB(255, 255, 255, 255),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(

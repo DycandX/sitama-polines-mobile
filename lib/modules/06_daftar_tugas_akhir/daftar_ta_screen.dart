@@ -157,10 +157,12 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
 
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: Scaffold(// Ubah background menjadi abu-abu
+      child: Scaffold(
+        backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: AppBar(
+          backgroundColor: const Color.fromARGB(250, 250, 250, 250),
           automaticallyImplyLeading: false,
           elevation: 0, // Menghapus shadow
           flexibleSpace: Padding(
@@ -189,12 +191,16 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
                 Row(
                   children: [
                     SizedBox(width: 30),
-                    Text(
-                      userName ?? "Loading...", // Ensure mhsNama is not null
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Container(
+                        width: 150,
+                        child: Text(
+                          userName ?? "Loading...", // Ensure mhsNama is not null
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(

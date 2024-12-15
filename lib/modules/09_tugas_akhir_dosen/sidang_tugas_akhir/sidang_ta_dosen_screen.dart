@@ -139,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double fontSizeSubtitle = screenWidth * 0.04;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(40, 43, 116, 1),
         toolbarHeight: 0,

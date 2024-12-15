@@ -144,6 +144,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
         child: Column(
@@ -224,6 +225,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                 itemBuilder: (context, index) {
                   final guidance = guidanceList[index];
                   return Card(
+                    color: const Color.fromARGB(255, 255, 255, 255),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
                       title: Text(

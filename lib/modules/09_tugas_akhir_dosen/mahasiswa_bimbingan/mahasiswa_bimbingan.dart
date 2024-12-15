@@ -160,7 +160,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
         backgroundColor: const Color.fromRGBO(40, 43, 116, 1),
         toolbarHeight: 0,
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       body: Stack(
         children: [
           ProfileHeader(), // Tetap di bagian atas
@@ -280,7 +280,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                       children: [
                                         Icon(
                                           Icons.circle,
-                                          color: (mahasiswa.progress != null && mahasiswa.progress == 8)
+                                          color: (mahasiswa.progress != null && mahasiswa.progress == masterJumlah)
                                               ? Colors.green
                                               : Colors.yellow,
                                           size: 18,

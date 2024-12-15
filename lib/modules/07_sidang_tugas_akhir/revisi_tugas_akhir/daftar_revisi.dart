@@ -179,11 +179,13 @@ Future<void> downloadPdf(
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0, // Menghapus shadow
+          backgroundColor: const Color.fromARGB(250, 250, 250, 250),
           flexibleSpace: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
             child: Row(
@@ -209,12 +211,16 @@ Future<void> downloadPdf(
                 Row(
                   children: [
                     SizedBox(width: 30),
-                    Text(
-                      userName ?? "Loading...", // Ensure mhsNama is not null
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Container(
+                        width: 150,
+                        child: Text(
+                          userName ?? "Loading...", // Ensure mhsNama is not null
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )
                     ),
                     SizedBox(width: 10),
                     CircleAvatar(
@@ -258,6 +264,7 @@ Future<void> downloadPdf(
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Card(
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),

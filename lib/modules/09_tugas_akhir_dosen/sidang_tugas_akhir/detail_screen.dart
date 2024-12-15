@@ -164,6 +164,7 @@ class _DetailScreenState extends State<DetailScreen> {
     bool hideFields = widget.sebagai.toLowerCase() == 'sekretaris';
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         title: const Text('Input Nilai Ujian Sidang Tugas Akhir'),
         leading: IconButton(

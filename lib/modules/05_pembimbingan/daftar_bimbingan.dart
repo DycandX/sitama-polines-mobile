@@ -198,9 +198,11 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
         toolbarHeight: 10, // Adjusted height for better header presentation
+        backgroundColor: const Color.fromRGBO(40, 42, 116, 1),
       ),
       body: Column(
         children: [
@@ -234,12 +236,16 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
                       Row(
                         children: [
                           SizedBox(width: 30),
-                          Text(
-                            userName ?? "Loading...", // Ensure mhsNama is not null
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                          Container(
+                              width: 150,
+                              child: Text(
+                                userName ?? "Loading...", // Ensure mhsNama is not null
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              )
                           ),
                           SizedBox(width: 10),
                           CircleAvatar(
@@ -273,6 +279,7 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: Card(
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
