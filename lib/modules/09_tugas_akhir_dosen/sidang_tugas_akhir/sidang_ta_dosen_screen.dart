@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final sidang = dataSidang[index];
                         return Card(
-                          color: const Color.fromRGBO(255, 246, 245, 245),
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           margin:
                           EdgeInsets.symmetric(vertical: padding * 0.3),
                           child: ListTile(

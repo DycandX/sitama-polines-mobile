@@ -166,25 +166,25 @@ class AppNavigation {
                 name: "Home",
                 builder: (BuildContext context, GoRouterState state) =>
                     JadwalSidangPage(),
-                routes: [
-                  GoRoute(
-                    path: "subSetting",
-                    name: "subSetting",
-                    pageBuilder: (context, state) {
-                      return CustomTransitionPage<void>(
-                        key: state.pageKey,
-                        child:homeMahasiswaScreen(),
-                        transitionsBuilder: (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                          child,
-                        ) =>
-                            FadeTransition(opacity: animation, child: child),
-                      );
-                    },
-                  ),
-                ],
+                // routes: [
+                //   GoRoute(
+                //     path: "subSetting",
+                //     name: "subSetting",
+                //     pageBuilder: (context, state) {
+                //       return CustomTransitionPage<void>(
+                //         key: state.pageKey,
+                //         child:homeMahasiswaScreen(),
+                //         transitionsBuilder: (
+                //           context,
+                //           animation,
+                //           secondaryAnimation,
+                //           child,
+                //         ) =>
+                //             FadeTransition(opacity: animation, child: child),
+                //       );
+                //     },
+                //   ),
+                // ],
               ),
             ],
           ),

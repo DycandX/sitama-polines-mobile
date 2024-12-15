@@ -200,7 +200,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
-                          color: const Color.fromARGB(255, 246, 245, 245),
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(

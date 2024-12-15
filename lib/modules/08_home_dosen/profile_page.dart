@@ -1,56 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pbl_sitama/services/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:pbl_sitama/profile_provider.dart';
 
-import '../02_login/login_page.dart';
-
-void main() {
-  runApp(MyApp());
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class MyApp extends StatelessWidget {
+class _ProfilePageState extends State<ProfilePage> {
+    String? userName;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jadwal Sidang',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Poppins',
-      ),
-      home: ProfilePage(),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final authProvider = Provider.of<AuthProvider>(context);
+    userName = authProvider.userName;
   }
-}
-
-class ProfilePage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
+    final profile = Provider.of<ProfileProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 10, // Adjusted for better alignment
-        toolbarHeight: 10, // Adjusted height for better header presentation
+        leadingWidth: 10,
+        toolbarHeight: 10,
         backgroundColor: Color(0xFF282A74),
       ),
-      backgroundColor:
-          Color(0xFF282A74), // Background color for the profile page
+      backgroundColor: Color(0xFF282A74),
       body: Stack(
         children: [
-          // GestureDetector(
-          //         onTap: () {
-          //           Navigator.pop(context);
-          //         },
-          //         child: Container(
-          //           decoration: BoxDecoration(
-          //             shape: BoxShape.circle,
-          //             color: Colors.blueAccent,
-          //           ),
-          //           padding: EdgeInsets.all(8.0),
-          //           child: Icon(
-          //             Icons.arrow_back,
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //       ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -68,9 +49,9 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  SizedBox(height: 40), // Space to avoid overlapping content
+                  SizedBox(height: 40),
                   Text(
-                    'WIKTASARI, S.T., M.Kom.',
+                    userName ?? 'Loading..', 
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 15,
@@ -85,13 +66,13 @@ class ProfilePage extends StatelessWidget {
                       fontSize: 13,
                     ),
                   ),
-                  SizedBox(height: 40), // Space above the button
+                  SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
                       _showLogoutConfirmationDialog(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Red button color
+                      backgroundColor: Colors.red,
                       padding:
                           EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                       textStyle: TextStyle(
@@ -102,14 +83,13 @@ class ProfilePage extends StatelessWidget {
                     ),
                     child: Text(
                       'LOG OUT',
-                      style: TextStyle(color: Colors.white), // White text color
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          // Profile Photo
           Positioned(
             top: 180,
             left: 0,
@@ -118,18 +98,9 @@ class ProfilePage extends StatelessWidget {
               child: CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.white,
-                child: ClipOval(
-                    // child: Image.asset(
-                    //   '',
-                    //   width: 100, // Adjust width and height to fit within CircleAvatar
-                    //   height: 100,
-                    //   fit: BoxFit.cover,
-                    // ),
-                    ),
               ),
             ),
           ),
-          // 'Profile' text at the top
           Positioned(
             top: 150,
             left: 0,
@@ -175,18 +146,16 @@ class ProfilePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // No Button
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(Icons.close, color: Colors.red),
                   ),
-                  // Yes Button
                   IconButton(
                     onPressed: () {
                       _logout(context);
-                      Navigator.of(context).pop(); // Close dialog
+                      Navigator.of(context).pop();
                     },
                     icon: Icon(Icons.check, color: Colors.green),
                   ),
@@ -200,17 +169,10 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _logout(BuildContext context) async {
-    // Clear token from SharedPreferences (or other storage)
-    SharedPreferences.setMockInitialValues({});
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token'); // assuming you stored the token under the key 'token'
+    await prefs.remove('userName'); // Hapus nama pengguna
+    await prefs.remove('token');    // Hapus token jika ada
 
-    context.pushReplacement('/login');
-    // Redirect to the login screen
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => LoginPage())
-    // );
+    Navigator.pushReplacementNamed(context, '/login');
   }
 }
-
