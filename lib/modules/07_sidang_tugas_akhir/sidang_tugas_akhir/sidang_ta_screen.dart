@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/sidang_tugas_akhir/sidang_ta_controller.dart';
 import 'package:pbl_sitama/modules/07_sidang_tugas_akhir/revisi_tugas_akhir/daftar_revisi.dart';
 import 'package:pbl_sitama/services/api_service.dart';
@@ -149,10 +150,20 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context);
+    GoRouter.of(context).pushReplacement('/home_mahasiswa');
+
+    return true;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
     print(statusLulus);
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       appBar: AppBar(
         leadingWidth: 10,
         toolbarHeight: 10,
@@ -175,6 +186,7 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
                     child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -350,6 +362,7 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }

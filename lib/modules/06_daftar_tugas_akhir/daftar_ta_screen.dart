@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:crypto/crypto.dart';
@@ -139,11 +140,21 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context);
+    GoRouter.of(context).pushReplacement('/home_mahasiswa');
+
+    return true;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
     bool allVerified = _controller.daftarTugas.every((item) => item.status == 'Diverifikasi');
 
-    return Scaffold(// Ubah background menjadi abu-abu
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(// Ubah background menjadi abu-abu
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: AppBar(
@@ -164,6 +175,7 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
                     child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -208,7 +220,7 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
                 ],
               ),
             ),
-            if (allVerified && dataSidang == null)
+            if (allVerified && dataSidang == null && _controller.daftarTugas.isNotEmpty)
               ElevatedButton(
                 onPressed: () {
                   if(dataSidang == null) {
@@ -254,6 +266,7 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
           ],
         ),
       ),
+    )
     );
   }
 

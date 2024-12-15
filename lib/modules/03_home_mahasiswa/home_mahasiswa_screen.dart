@@ -19,13 +19,41 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final NavigatorObserver navigatorObserver = NavigatorObserver();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: homeMahasiswaScreen(),
+      navigatorObservers: [navigatorObserver],
     );
   }
 }
+
+class MyNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    super.didPush(route, previousRoute);
+    _refreshHomePage(route);
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    _refreshHomePage(previousRoute); // Memanggil refreshData saat kembali ke halaman sebelumnya
+  }
+
+  void _refreshHomePage(Route? route) {
+    if (route?.settings.name == '/home_mahasiswa') { // Cek nama route
+      final context = route?.navigator?.context;
+      if (context != null) {
+        final state = context.findAncestorStateOfType<_homeMahasiswaScreenState>();
+        state?.refreshData(); // Panggil refreshData() untuk memuat ulang data
+      }
+    }
+  }
+}
+
 
 class homeMahasiswaScreen extends StatefulWidget {
   @override
@@ -33,6 +61,15 @@ class homeMahasiswaScreen extends StatefulWidget {
 }
 
 class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
+  void refreshData() {
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadMahasiswaData(token); // Memuat data ulang
+    } else {
+      print('User is not authenticated');
+    }
+  }
+
   // API Fetch
   String? mhsNama;
   int? mhsNim;
@@ -74,16 +111,26 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
   @override
   void initState() {
     super.initState();
-
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
       print('User is not authenticated');
     }
+
+    // Refresh data setelah halaman muncul
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final token = Provider.of<AuthProvider>(context, listen: false).token;
+      if (token != null) {
+        loadMahasiswaData(token); // Memuat data ulang setelah halaman muncul
+      }
+    });
   }
 
+
+
   // UI
+
 
   @override
   Widget build(BuildContext context) {

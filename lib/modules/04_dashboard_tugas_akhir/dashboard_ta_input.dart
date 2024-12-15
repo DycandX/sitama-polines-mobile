@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
 import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dasboard_ta_tampilkan.dart';
 import 'package:pbl_sitama/modules/04_dashboard_tugas_akhir/dashboard_ta_controller.dart';
 import 'package:pbl_sitama/services/api_service.dart';
@@ -44,9 +46,10 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
       print('User is not authenticated');
     }
   }
-  
+
   final TextEditingController _taInputController = TextEditingController();
   final TextEditingController _mhsInputController = TextEditingController();
+  int? selectedMhsNim; // Menyimpan mhs_nim yang dipilih
 
   @override
   void dispose() {
@@ -55,10 +58,41 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
     super.dispose();
   }
 
-  void _input(String string) async {
-    final taJudul = _taInputController.text.trim();
-    final mhs_nim = _mhsInputController.text.trim();
+  Future<List<Map<String, dynamic>>> fetchAutocompleteData(String query) async {
+    try {
+      final token = Provider.of<AuthProvider>(context, listen: false).token;
+      if (token == null) throw Exception("Token is missing");
 
+      final response = await get(
+        Uri.parse('${Config.baseUrl}dashboard-mahasiswa/autocomplete?term=$query'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body)['data'];
+        // Pastikan untuk memfilter berdasarkan query jika perlu
+        return data.map<Map<String, dynamic>>((item) {
+          return {
+            'id': item['id'],     // mhs_nim
+            'value': item['value'] // mhs_nama
+          };
+        }).where((item) {
+          // Filter tambahan di frontend
+          return item['value'].toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      } else {
+        throw Exception('Failed to fetch autocomplete data');
+      }
+    } catch (e) {
+      print("Error fetching autocomplete data: $e");
+      return [];
+    }
+  }
+
+  void _input() async {
+    final taJudul = _taInputController.text.trim();
+
+    // Validasi hanya pada judul TA
     if (taJudul.isEmpty) {
       showDialog(
         context: context,
@@ -78,26 +112,25 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
 
     try {
       final token = Provider.of<AuthProvider>(context, listen: false).token;
-      if (token == null) {
-        print('Token is missing');
-        return;
-      }
+      if (token == null) throw Exception("Token is missing");
 
-      // Kirim data ke API
+      // Payload untuk API
+      final payload = {
+        'judul_ta': taJudul,
+        'tim-id': selectedMhsNim, // Tambahkan jika tidak null
+      };
+
+      // Kirim request ke API
       final response = await post(
         Uri.parse('${Config.baseUrl}dashboard-mahasiswa'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Tambahkan token
+          'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          'judul_ta': taJudul,
-          'mhs_nim': mhs_nim,
-        }),
+        body: jsonEncode(payload),
       );
 
       if (response.statusCode == 200) {
-        // Data berhasil disimpan di API
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -105,14 +138,12 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             content: const Text("Judul Tugas Akhir berhasil disimpan."),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Tutup dialog
+                onPressed: () async {
+                  Navigator.pop(context); // Tutup dialog dulu
+                  await Future.delayed(Duration(milliseconds: 300)); // Beri jeda sebentar
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DashboardScreen(), // Navigasi ke DashboardScreen
-                    ),
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
                   );
                 },
                 child: const Text("OK"),
@@ -120,22 +151,9 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             ],
           ),
         );
-        _taInputController.clear(); // Reset input field
-      }else {
-        // Gagal menyimpan data
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Gagal"),
-            content: Text("Error: ${response.body}"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
-          ),
-        );
+        _taInputController.clear();
+      } else {
+        throw Exception("Error: ${response.body}");
       }
     } catch (e) {
       print("Error during API call: $e");
@@ -155,10 +173,19 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context);
+    GoRouter.of(context).pushReplacement('/home_mahasiswa');
+
+    return true;  // Menandakan bahwa pop boleh terjadi
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       appBar: AppBar(
         leadingWidth: 10,
         toolbarHeight: 10,
@@ -172,20 +199,19 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Transform.translate(
-                  offset: Offset(-25, 0), // Menggeser ke kiri sebesar 10 piksel
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.indigo[900],
-                    padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 15.0,
-                      color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromRGBO(40, 42, 116, 1),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
                 ),
@@ -292,32 +318,46 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[
-                          200], // Light grey background to match the image
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: TextField(
-                      maxLines: 5,
-                      controller: _mhsInputController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                      ),
-                    ),
+                  Autocomplete<Map<String, dynamic>>(
+                    optionsBuilder: (TextEditingValue textEditingValue) async {
+                      if (textEditingValue.text.isEmpty) {
+                        return const Iterable<Map<String, dynamic>>.empty();
+                      }
+                      return await fetchAutocompleteData(textEditingValue.text);
+                    },
+                    displayStringForOption: (Map<String, dynamic> option) => option['value'], // Menampilkan mhs_nama
+                    fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200], // Sama seperti input "Judul TA"
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                            hintText: 'Cari anggota...',
+                          ),
+                        ),
+                      );
+                    },
+                    onSelected: (Map<String, dynamic> selection) {
+                      setState(() {
+                        selectedMhsNim = selection['id']; // Simpan mhs_nim yang dipilih
+                      });
+                      print('Selected mhs_nim: ${selection['id']}');
+                    },
                   ),
                   SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => _input(
-                          _taInputController.toString()),
+                      onPressed: _input,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 15), // To match button height
+                        padding: EdgeInsets.symmetric(vertical: 15),
                       ),
                       child: Text(
                         'Ajukan Judul',
@@ -331,6 +371,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }

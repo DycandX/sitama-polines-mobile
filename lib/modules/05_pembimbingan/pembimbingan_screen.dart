@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/buat_bimbingan_screen.dart';
-import 'package:pbl_sitama/modules/05_pembimbingan/daftar_bimbingan.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/lihat_bimbingan_screen.dart';
 import 'package:pbl_sitama/modules/05_pembimbingan/status_bimbingan_screen.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/daftar_bimbingan.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/api_service.dart';
@@ -67,9 +66,19 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
   }
   // End of API Code
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context);
+    GoRouter.of(context).pushReplacement('/home_mahasiswa');
+
+    return true;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
         toolbarHeight: 10, // Adjusted height for better header presentation
@@ -93,6 +102,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                     child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -263,6 +273,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }

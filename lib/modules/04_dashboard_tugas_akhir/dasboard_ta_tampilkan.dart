@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pbl_sitama/services/api_service.dart';
 import 'package:provider/provider.dart';
 
@@ -96,6 +97,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // Variabel untuk menandakan apakah plotting sudah dilakukan atau belum
   bool isPlottingDone = false;
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context);
+    GoRouter.of(context).pushReplacement('/home_mahasiswa');
+
+    return true;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
     final isAuthenticated = Provider.of<AuthProvider>(context).isAuthenticated;
@@ -118,7 +127,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
         toolbarHeight: 10, // Adjusted height for better header presentation
@@ -142,6 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -347,6 +359,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }
