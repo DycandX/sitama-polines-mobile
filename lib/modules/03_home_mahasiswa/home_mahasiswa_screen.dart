@@ -108,10 +108,13 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
     }
   }
 
+  String? userName;
   @override
   void initState() {
     super.initState();
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
@@ -168,7 +171,7 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    mhsNama!,
+                                    userName!,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 18,

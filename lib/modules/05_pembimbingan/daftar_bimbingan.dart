@@ -127,6 +127,7 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
   String? mhsNama;
   String? pembimbing1_nama;
   String? pembimbing1_nip;
+  String? userName;
 
   bool isLoading = true;
 
@@ -185,6 +186,8 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
     super.initState();
 
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
@@ -232,7 +235,7 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
                         children: [
                           SizedBox(width: 30),
                           Text(
-                            mhsNama ?? "Loading...", // Ensure mhsNama is not null
+                            userName ?? "Loading...", // Ensure mhsNama is not null
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

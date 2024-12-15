@@ -35,11 +35,14 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
     }
   }
 
+  String? userName;
   @override
   void initState() {
     super.initState();
 
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
@@ -221,7 +224,7 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      MhsNama ??
+                      userName ??
                           'Loading...', // Tampilkan 'Loading...' jika MhsNama masih null
                       style: TextStyle(
                         fontWeight: FontWeight.bold,

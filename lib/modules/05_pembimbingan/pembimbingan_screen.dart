@@ -53,11 +53,14 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
     }
   }
 
+  String? userName;
   @override
   void initState() {
     super.initState();
 
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
@@ -76,6 +79,9 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDosenNotPlotted = pembimbing1_count == null && pembimbing2_count == null;
+    bool isLoadingDosen = isDosenNotPlotted && isLoading;
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -114,7 +120,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      mhsNama ?? "Loading...", // Ensure mhsNama is not null
+                      userName ?? "Loading...", // Ensure mhsNama is not null
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -146,6 +152,22 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
               ],
             ),
             const SizedBox(height: 16),
+            if (isLoadingDosen)
+              Center(
+                child: CircularProgressIndicator(), // Show loading spinner
+              )
+            else if (isDosenNotPlotted)
+              Center(
+                child: Text(
+                  'Dosen Belum Diplotting',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              )
+            else ...[
             // Lihat Bimbingan Button
             Container(
               margin: const EdgeInsets.only(bottom: 12),
@@ -270,6 +292,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                 ),
               ),
             ),
+          ],
           ],
         ),
       ),

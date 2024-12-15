@@ -53,10 +53,13 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
     }
   }
 
+  String? userName;
   @override
   void initState() {
     super.initState();
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    userName = authProvider.userName;
     if (token != null) {
       loadMahasiswaData(token);
     } else {
@@ -218,7 +221,7 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
                   children: [
                     SizedBox(width: 30),
                     Text(
-                      MhsNama ?? "Loading...", // Ensure mhsNama is not null
+                      userName ?? "Loading...", // Ensure mhsNama is not null
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
