@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/sidang_ta_dosen_screen.dart';
 import 'package:pbl_sitama/profile_header.dart';
 import 'package:provider/provider.dart';
 import '../../services/api_service.dart';
@@ -17,7 +14,6 @@ class JadwalSidangPage extends StatefulWidget {
 class _JadwalSidangPageState extends State<JadwalSidangPage> {
   int selectedIndex = 0;
   List<Map<String, dynamic>> jadwalSidang = [];
-
   bool isLoading = true;
 
   Future<void> loadJadwalSidang(String token) async {
@@ -32,17 +28,14 @@ class _JadwalSidangPageState extends State<JadwalSidangPage> {
           final DateTime parsedDate = DateTime.parse(tanggal);
           final String hari = _getDayName(parsedDate.weekday);
 
-          // Ambil sesi dan ruangan
           Map<String, dynamic> sesiData = entry.value;
           List<Map<String, String>> sesiList = [];
 
-          // Proses setiap sesi dan ruangan
           sesiData.forEach((sesiKey, ruanganData) {
             ruanganData.forEach((ruanganKey, mahasiswaList) {
               sesiList.add({
                 'sesi': sesiKey,
                 'ruangan': ruanganKey,
-                // Tentukan status berdasarkan tanggal
                 'status': parsedDate.isBefore(DateTime.now()) ? 'Tidak Tersedia' : 'Tersedia',
               });
             });
@@ -82,11 +75,23 @@ class _JadwalSidangPageState extends State<JadwalSidangPage> {
   void initState() {
     super.initState();
 
+    // Memastikan data dimuat saat pertama kali masuk ke halaman ini
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     if (token != null) {
       loadJadwalSidang(token);
     } else {
       print('User is not authenticated');
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Memastikan data dimuat ulang jika halaman ini diakses
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    if (token != null) {
+      loadJadwalSidang(token);
     }
   }
 

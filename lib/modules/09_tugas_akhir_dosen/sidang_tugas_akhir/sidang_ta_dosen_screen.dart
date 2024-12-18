@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
             String formatTanggal = logItem['tgl_sidang'];
             DateTime tanggal = DateFormat("yyy-MM-dd").parse(formatTanggal);
             // Membandingkan dengan tanggal saat ini
-            String status = DateTime.now().isAfter(tanggal) ? "Sudah Melakukan Sidang" : "Belum Melakukan Sidang";
+            // String status = DateTime.now().isAfter(tanggal) ? "Sudah Melakukan Sidang" : "Belum Melakukan Sidang";
 
             String sebagai;
             if (logItem['isPembimbing'] == true) {
@@ -100,13 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
               'name': logItem['mhs_nama'],
               'tahunAkademik': logItem['tahun_akademik'],
               'judulTA': logItem['ta_judul'],
-              'status': status, // Menggunakan status yang ditentukan
+              'status': logItem['nilai_akhir'] ?? "", // Menggunakan status yang ditentukan
               'ruangan': logItem['ruangan_nama'],
               'sebagai': sebagai,
-              'kedisiplinanBimbingan' : '100',
-              'kreativitasPemecahanMasalah': '100',
-              'penguasaanMateri': '100',
-              'kelengkapanReferensi': '100',
               'ta_sidang_id': logItem['ta_sidang_id'],
             });
           }
@@ -231,16 +227,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       Icon(
                                         Icons.circle,
-                                        color: sidang['status'] == "Sudah Melakukan Sidang"
-                                            ? Colors.green // If the status is "Sudah Melaksanakan Sidang", color will be green
-                                            : Colors.yellow, // Otherwise, it will be yellow
+                                        color: sidang['status'] != "" ? Colors.green : Colors.yellow, // Green if status is not empty, yellow if empty
                                         size: fontSizeSubtitle * 0.9,
                                       ),
                                       const SizedBox(width: 8),
                                       Text(
-                                        sidang['status'],
-                                        style: TextStyle(
-                                            fontSize: fontSizeSubtitle * 0.9),
+                                        sidang['status'] != "" ? "Sudah Melakukan Sidang" : "Belum Melakukan Sidang", // Conditional text based on status
+                                        style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
                                       ),
                                     ],
                                   ),
