@@ -94,7 +94,6 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
 
   void _input() async {
     final taJudul = _taInputController.text.trim();
-
     // Validasi hanya pada judul TA
     if (taJudul.isEmpty) {
       showDialog(
@@ -142,12 +141,9 @@ class _FinalProjectScreenState extends State<FinalProjectScreen> {
             actions: [
               TextButton(
                 onPressed: () async {
-                  Navigator.pop(context); // Tutup dialog dulu
-                  await Future.delayed(Duration(milliseconds: 300)); // Beri jeda sebentar
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => DashboardScreen()),
-                  );
+                  // Navigator.pop(context);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()),);
+                  GoRouter.of(context).pushReplacement('/home_mahasiswa');
                 },
                 child: const Text("OK"),
               ),

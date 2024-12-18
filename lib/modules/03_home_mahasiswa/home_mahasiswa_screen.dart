@@ -130,8 +130,6 @@ class _homeMahasiswaScreenState extends State<homeMahasiswaScreen> {
     });
   }
 
-
-
   // UI
 
 

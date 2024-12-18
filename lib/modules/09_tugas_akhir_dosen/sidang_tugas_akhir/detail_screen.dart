@@ -13,10 +13,7 @@ class DetailScreen extends StatefulWidget {
   final String ruangan;
   final String sebagai;
   final int ta_sidang_id;
-  final String kedisiplinanBimbingan;
-  final String kreativitasPemecahanMasalah;
-  final String penguasaanMateri;
-  final String kelengkapanReferensi;
+  final int ta_id;
   final Function(Map<String, dynamic>) onSave;
 
   const DetailScreen({
@@ -27,12 +24,9 @@ class DetailScreen extends StatefulWidget {
     required this.judulTA,
     required this.ruangan,
     required this.sebagai,
-    required this.kedisiplinanBimbingan,
-    required this.kreativitasPemecahanMasalah,
-    required this.penguasaanMateri,
-    required this.kelengkapanReferensi,
     required this.ta_sidang_id,
     required this.onSave,
+    required this.ta_id,
   });
 
   @override
@@ -64,14 +58,16 @@ class _DetailScreenState extends State<DetailScreen> {
     ruanganController = TextEditingController(text: widget.ruangan);
     sebagaiController = TextEditingController(text: widget.sebagai);
     taSidangIdController = TextEditingController(text: widget.ta_sidang_id.toString());
-    kedisiplinanBimbinganController =
-        TextEditingController(text: widget.kedisiplinanBimbingan);
-    kreativitasPemecahanMasalahController =
-        TextEditingController(text: widget.kreativitasPemecahanMasalah);
-    penguasaanMateriController =
-        TextEditingController(text: widget.penguasaanMateri);
-    kelengkapanReferensiController =
-        TextEditingController(text: widget.kelengkapanReferensi);
+
+    // Initialize controllers for input fields
+    kedisiplinanBimbinganController = TextEditingController();
+    kreativitasPemecahanMasalahController = TextEditingController();
+    penguasaanMateriController = TextEditingController();
+    kelengkapanReferensiController = TextEditingController();
+
+    // Memanggil loadMahasiswaData untuk mendapatkan data dari API
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    loadMahasiswaData(token!);
   }
 
   @override
@@ -89,6 +85,70 @@ class _DetailScreenState extends State<DetailScreen> {
     kelengkapanReferensiController.dispose();
     super.dispose();
   }
+
+  bool isLoading = true;
+  Future<void> loadMahasiswaData(String token) async {
+    try {
+      final url = widget.sebagai.toLowerCase() == 'pembimbing'
+          ? "${Config.baseUrl}ujian-sidang/kelayakan/${widget.ta_id}"
+          : "${Config.baseUrl}ujian-sidang/penguji/${widget.ta_id}";
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('Data: $data');  // Tambahkan log untuk melihat data yang diterima
+
+        setState(() {
+          if (widget.sebagai.toLowerCase() == 'pembimbing') {
+            kedisiplinanBimbinganController.text = (data['nilai_pembimbing_saved'] != null && data['nilai_pembimbing_saved']['1'] != null)
+                ? data['nilai_pembimbing_saved']['1'].toString()
+                : '100';
+            kreativitasPemecahanMasalahController.text = (data['nilai_pembimbing_saved'] != null && data['nilai_pembimbing_saved']['2'] != null)
+                ? data['nilai_pembimbing_saved']['2'].toString()
+                : '100';
+            penguasaanMateriController.text = (data['nilai_pembimbing_saved'] != null && data['nilai_pembimbing_saved']['3'] != null)
+                ? data['nilai_pembimbing_saved']['3'].toString()
+                : '100';
+            kelengkapanReferensiController.text = (data['nilai_pembimbing_saved'] != null && data['nilai_pembimbing_saved']['4'] != null)
+                ? data['nilai_pembimbing_saved']['4'].toString()
+                : '100';
+          } else {
+            kedisiplinanBimbinganController.text = (data['nilai_penguji_saved'] != null && data['nilai_penguji_saved']['1'] != null)
+                ? data['nilai_penguji_saved']['1'].toString()
+                : '100';
+            kreativitasPemecahanMasalahController.text = (data['nilai_penguji_saved'] != null && data['nilai_penguji_saved']['2'] != null)
+                ? data['nilai_penguji_saved']['2'].toString()
+                : '100';
+            penguasaanMateriController.text = (data['nilai_penguji_saved'] != null && data['nilai_penguji_saved']['3'] != null)
+                ? data['nilai_penguji_saved']['3'].toString()
+                : '100';
+            kelengkapanReferensiController.text = (data['nilai_penguji_saved'] != null && data['nilai_penguji_saved']['4'] != null)
+                ? data['nilai_penguji_saved']['4'].toString()
+                : '100';
+          }
+          isLoading = false;
+        });
+      } else {
+        print('Error: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+
+    } catch (e) {
+      print('Error fetching data: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
 
   Future<void> saveData() async {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
@@ -278,5 +338,4 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
 }

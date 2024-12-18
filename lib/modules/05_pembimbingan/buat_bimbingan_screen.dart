@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:pbl_sitama/modules/05_pembimbingan/pembimbingan_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/api_service.dart';
@@ -78,16 +79,27 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
   }
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom, // Use custom file type
+      allowedExtensions: ['pdf'], // Allow only PDF files
+    );
 
     if (result != null && result.files.single.path != null) {
-      setState(() {
-        selectedFile = result.files.single.path; // Simpan path file
-      });
+      final filePath = result.files.single.path!;
+      final fileExtension = filePath.split('.').last.toLowerCase(); // Get the file extension
+
+      if (fileExtension == 'pdf') {
+        setState(() {
+          selectedFile = filePath; // Save the file path if it's a PDF
+        });
+      } else {
+        _showDialog('Invalid File', 'Only PDF files are allowed.');
+      }
     } else {
       print('File picking canceled or failed');
     }
   }
+
 
 
   final TextEditingController _judulController = TextEditingController();
@@ -144,15 +156,21 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
             selectedDosen = null;
             selectedFile = null;
           });
-          _showDialog('Berhasil', 'Judul Tugas Akhir berhasil disimpan.');
-
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bimbingan Berhasil Ditambahkan')),
+          );
           Navigator.pop(context);
         } else {
-          final respStr = await response.stream.bytesToString();
-          _showDialog('Gagal', 'Error: $respStr');
+          // final respStr = await response.stream.bytesToString();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bimbingan Gagal Disimpan')),
+          );
         }
       } catch (e) {
-        _showDialog('Error', 'Terjadi kesalahan: ${e.toString()}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+        print('Error: $e');
       }
     }
   }
@@ -166,7 +184,9 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
         content: Text(content),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             child: const Text("OK"),
           ),
         ],

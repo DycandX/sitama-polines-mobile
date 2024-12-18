@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
@@ -93,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             dataSidang.add({
+              'ta_id': logItem['ta_id'],
               'nim': logItem['mhs_nim'],
               'name': logItem['mhs_nama'],
               'tahunAkademik': logItem['tahun_akademik'],
@@ -254,6 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DetailScreen(
+                                      ta_id: sidang['ta_id'],
                                       nim: sidang['nim'].toString(), // Ensure it's a string
                                       name: sidang['name'],
                                       tahunAkademik: sidang['tahunAkademik'].toString(), // Ensure it's a string
@@ -261,10 +265,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ruangan: sidang['ruangan'],
                                       sebagai: sidang['sebagai'],
                                       ta_sidang_id: sidang['ta_sidang_id'],
-                                      kedisiplinanBimbingan: sidang['kedisiplinanBimbingan'],
-                                      kreativitasPemecahanMasalah: sidang['kreativitasPemecahanMasalah'],
-                                      penguasaanMateri: sidang['penguasaanMateri'],
-                                      kelengkapanReferensi: sidang['kelengkapanReferensi'],
                                       onSave: (updatedEntry) => _updateEntry(index, updatedEntry),
                                     ),
                                   ),

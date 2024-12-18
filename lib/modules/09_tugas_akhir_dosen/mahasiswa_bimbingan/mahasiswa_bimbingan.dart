@@ -280,7 +280,7 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                       children: [
                                         Icon(
                                           Icons.circle,
-                                          color: (mahasiswa.progress != null && mahasiswa.progress == masterJumlah)
+                                          color: (mahasiswa.progress != null && mahasiswa.progress! >= masterJumlah!)
                                               ? Colors.green
                                               : Colors.yellow,
                                           size: 18,
