@@ -230,7 +230,6 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {
-                                        // Navigasi ke halaman DaftarBimbingan dan tunggu sampai halaman kembali
                                         final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -244,14 +243,11 @@ class _MahasiswaBimbinganState extends State<MahasiswaBimbingan> {
                                         );
 
                                         // Periksa apakah data berhasil kembali dan lakukan refresh
-                                        if (result != null) {
-                                          setState(() {
-                                            // Panggil kembali data mahasiswa setelah kembali
-                                            final token = Provider.of<AuthProvider>(context, listen: false).token;
-                                            if (token != null) {
-                                              loadMahasiswaData(token);  // Memanggil ulang API untuk refresh data
-                                            }
-                                          });
+                                        if (result == true) {
+                                          final token = Provider.of<AuthProvider>(context, listen: false).token;
+                                          if (token != null) {
+                                            loadMahasiswaData(token); // Muat ulang data
+                                          }
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(

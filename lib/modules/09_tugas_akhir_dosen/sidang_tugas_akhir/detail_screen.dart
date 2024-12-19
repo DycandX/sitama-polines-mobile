@@ -187,7 +187,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data successfully saved!')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to save data')),
@@ -200,6 +200,11 @@ class _DetailScreenState extends State<DetailScreen> {
       );
       print('Error: $e');
     }
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context,true);
+    return false;  // Menandakan bahwa pop boleh terjadi
   }
 
   @override
@@ -222,15 +227,16 @@ class _DetailScreenState extends State<DetailScreen> {
 
     // Kondisi untuk menyembunyikan form dan tombol
     bool hideFields = widget.sebagai.toLowerCase() == 'sekretaris';
-
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         title: const Text('Input Nilai Ujian Sidang Tugas Akhir'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
         ),
         actions: [
@@ -336,6 +342,7 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
         ),
       ),
+    )
     );
   }
 }

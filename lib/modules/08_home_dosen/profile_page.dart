@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  SizedBox(height: 40),
+                  SizedBox(height: 50),
                   Text(
                     userName ?? 'Loading..', 
                     style: TextStyle(
@@ -60,13 +60,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   SizedBox(height: 4),
-                  Text(
-                    'NIP: 123456789',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 13,
-                    ),
-                  ),
+                  // Text(
+                  //   'NIP: 123456789',
+                  //   style: TextStyle(
+                  //     fontFamily: 'Poppins',
+                  //     fontSize: 13,
+                  //   ),
+                  // ),
                   SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {

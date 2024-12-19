@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/dataMhs_ta.dart';
-import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -50,8 +48,10 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
   //     "isVerified": false
   //   },
   // ];
+  late int verified;
   String? userName;
   String? urutan;
+
   bool isLoading = true;
   final List<Map<String, dynamic>> guidanceList = [];
   Future<void> loadMahasiswaData(String token) async {
@@ -102,33 +102,47 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
   Future<void> sendPostRequest() async {
     final String url = '${Config.baseUrl}setujui-sidang-akhir/${widget.taId}';
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',  // Pastikan token ada di sini
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(<String, dynamic>{'urutan': urutan}),
       );
 
       if (response.statusCode == 200) {
-        // Handle successful response
         print('Response data: ${response.body}');
+        setState(() {
+          verified = 1; // Perbarui nilai verified di State
+          isLoading = true; // Tampilkan indikator loading sementara
+        });
+        if (token != null) {
+          await loadMahasiswaData(token);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berhasil disetujui')),
+        );
       } else {
-        // Handle error response
-        print(urutan);
-        print(url);
         print('Failed to send data: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal disetujui')),
+        );
       }
     } catch (e) {
       print('Error: $e');
+    } finally {
+      setState(() {
+        isLoading = false; // Hentikan indikator loading setelah aksi selesai
+      });
     }
   }
-
   @override
   void initState() {
     super.initState();
+    verified = widget.verified;
 
     final token = Provider.of<AuthProvider>(context, listen: false).token;
 
@@ -141,9 +155,16 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context,true);
+    return false;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
@@ -163,7 +184,7 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.pop(context, 'refresh');
+                        Navigator.pop(context, true);
                       },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -253,13 +274,13 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                         ],
                       ),
                       trailing: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           String title = guidance["title"];
                           String desc = guidance['desc'];
                           String downloadUrl = guidance['downloadUrl'];
                           String status = guidance['status'];
                           int bimbLogId = guidance['bimbLogId'];
-                          Navigator.push(
+                          final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => DatamhsTa(
@@ -270,14 +291,13 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
                                 bimbLogId: bimbLogId,
                               ),
                             ),
-                          ).then((result) {
-                            if (result == 'refresh') {
-                              final token = Provider.of<AuthProvider>(context, listen: false).token;
-                              if (token != null) {
-                                loadMahasiswaData(token);  // Memanggil ulang data jika kembali dengan refresh
-                              }
+                          );
+                          if (result == true) {
+                            final token = Provider.of<AuthProvider>(context, listen: false).token;
+                            if (token != null) {
+                              loadMahasiswaData(token); // Muat ulang data
                             }
-                          });
+                          }
 
                         },
                         style: ElevatedButton.styleFrom(
@@ -302,34 +322,39 @@ class _DaftarBimbinganState extends State<DaftarBimbingan> {
               ),
             ),
             // Approve Button at the Bottom
-            widget.verified == 1
-            ? SizedBox()
-            : Padding(
-              padding: const EdgeInsets.all(20),
-              child: ElevatedButton(
-                onPressed: () {
-                  sendPostRequest();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+            // Tombol Approve Button at the Bottom
+            if (verified != 1 && guidanceList.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                    sendPostRequest();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Center(
+                  child: Center(
                     child: Text(
-                  "Setujui Sidang",
-                  style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                )),
+                      "Setujui Sidang",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),
+    )
     );
   }
 }

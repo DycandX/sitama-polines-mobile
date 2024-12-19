@@ -7,6 +7,7 @@ import 'package:intl/locale.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
 import 'package:pbl_sitama/modules/08_home_dosen/profile_page.dart';
 import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/mahasiswa_bimbingan/mahasiswa_bimbingan.dart';
+import 'package:pbl_sitama/modules/09_tugas_akhir_dosen/sidang_tugas_akhir/daftar_revisi.dart';
 import 'package:provider/provider.dart';
 import '../../../services/api_service.dart';
 import 'detail_screen.dart';
@@ -178,97 +179,128 @@ class _HomeScreenState extends State<HomeScreen> {
                         final sidang = dataSidang[index];
                         return Card(
                           color: const Color.fromARGB(255, 255, 255, 255),
-                          margin:
-                          EdgeInsets.symmetric(vertical: padding * 0.3),
-                          child: ListTile(
-                            title: Text(
-                              sidang['name'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: fontSizeSubtitle,
-                              ),
-                            ),
-                            subtitle: Column(
+                          margin: EdgeInsets.symmetric(vertical: padding * 0.3),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0), // Menambahkan padding agar konten lebih rapi
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: screenHeight * 0.005),
-                                  child: Text(
-                                    'Nama: ${sidang['name']}',
-                                    style: TextStyle(
-                                        fontSize: fontSizeSubtitle * 0.9),
+                                Text(
+                                  sidang['name'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSizeSubtitle,
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: screenHeight * 0.005),
-                                  child: Text(
-                                    'NIM: ${sidang['nim']}',
-                                    style: TextStyle(
-                                        fontSize: fontSizeSubtitle * 0.9),
-                                  ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Nama: ${sidang['name']}',
+                                  style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: screenHeight * 0.005),
-                                  child: Text(
-                                    'Judul: ${sidang['judulTA']}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: fontSizeSubtitle * 0.9),
-                                  ),
+                                Text(
+                                  'NIM: ${sidang['nim']}',
+                                  style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: screenHeight * 0.005),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.circle,
-                                        color: sidang['status'] != "" ? Colors.green : Colors.yellow, // Green if status is not empty, yellow if empty
-                                        size: fontSizeSubtitle * 0.9,
+                                Text(
+                                  'Judul: ${sidang['judulTA']}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.circle,
+                                      color: sidang['status'] != "" ? Colors.green : Colors.yellow,
+                                      size: fontSizeSubtitle * 0.9,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      sidang['status'] != ""
+                                          ? "Sudah Melakukan Sidang"
+                                          : "Belum Melakukan Sidang",
+                                      style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 16), // Jarak antara informasi dan tombol
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center, // Posisi tombol di tengah
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromRGBO(50, 111, 233, 1),
+                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                        minimumSize: Size(100, 40),
                                       ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        sidang['status'] != "" ? "Sudah Melakukan Sidang" : "Belum Melakukan Sidang", // Conditional text based on status
-                                        style: TextStyle(fontSize: fontSizeSubtitle * 0.9),
+                                      onPressed: () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DetailScreen(
+                                              ta_id: sidang['ta_id'],
+                                              nim: sidang['nim'].toString(),
+                                              name: sidang['name'],
+                                              tahunAkademik: sidang['tahunAkademik'].toString(),
+                                              judulTA: sidang['judulTA'],
+                                              ruangan: sidang['ruangan'],
+                                              sebagai: sidang['sebagai'],
+                                              ta_sidang_id: sidang['ta_sidang_id'],
+                                              onSave: (updatedEntry) => _updateEntry(index, updatedEntry),
+                                            ),
+                                          ),
+                                        );
+                                        if (result == true) {
+                                          final token = Provider.of<AuthProvider>(context, listen: false).token;
+                                          if (token != null) {
+                                            loadMahasiswaData(token); // Muat ulang data
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        'Lihat',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: fontSizeSubtitle * 0.9,
+                                        ),
+                                      ),
+                                    ),
+                                    if (sidang['sebagai'] == "Penguji") ...[
+                                      SizedBox(width: 16), // Spasi antar tombol
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color.fromRGBO(233, 50, 50, 1),
+                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                          minimumSize: Size(100, 40),
+                                        ),
+                                        onPressed: () async {
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DaftarRevisiDosenScreen(
+                                                nim: sidang['nim'],
+                                              ),
+                                            ),
+                                          );
+                                          if (result == true) {
+                                            final token = Provider.of<AuthProvider>(context, listen: false).token;
+                                            if (token != null) {
+                                              loadMahasiswaData(token); // Muat ulang data
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          'Revisi',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: fontSizeSubtitle * 0.9,
+                                          ),
+                                        ),
                                       ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               ],
-                            ),
-                            trailing: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                const Color.fromRGBO(50, 111, 233, 1),
-                              ),
-                              onPressed: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailScreen(
-                                      ta_id: sidang['ta_id'],
-                                      nim: sidang['nim'].toString(), // Ensure it's a string
-                                      name: sidang['name'],
-                                      tahunAkademik: sidang['tahunAkademik'].toString(), // Ensure it's a string
-                                      judulTA: sidang['judulTA'],
-                                      ruangan: sidang['ruangan'],
-                                      sebagai: sidang['sebagai'],
-                                      ta_sidang_id: sidang['ta_sidang_id'],
-                                      onSave: (updatedEntry) => _updateEntry(index, updatedEntry),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Lihat',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: fontSizeSubtitle * 0.9),
-                              ),
                             ),
                           ),
                         );

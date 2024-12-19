@@ -199,13 +199,19 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                   ),
                 ),
                 trailing: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => LihatBimbinganScreen(pembimbing: '',),
                       ),
                     );
+                    if (result == true) {
+                      final token = Provider.of<AuthProvider>(context, listen: false).token;
+                      if (token != null) {
+                        loadMahasiswaData(token); // Muat ulang data
+                      }
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -245,13 +251,19 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                   ),
                 ),
                 trailing: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => StatusBimbinganScreen(),
                       ),
                     );
+                    if (result == true) {
+                      final token = Provider.of<AuthProvider>(context, listen: false).token;
+                      if (token != null) {
+                        loadMahasiswaData(token); // Muat ulang data
+                      }
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -278,10 +290,17 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
                       builder: (context) => BuatBimbinganScreen(onSave: (String title, String description, String? file, String? dosen) {  },),
                     ),
                   );
-                  if (result != null) {
-                    setState(() {
-                      bimbinganList.add(result);
-                    });
+                  // if (result != null) {
+                  //   setState(() {
+                  //     bimbinganList.add(result);
+                  //   });
+                  // }
+
+                  if (result == true) {
+                    final token = Provider.of<AuthProvider>(context, listen: false).token;
+                    if (token != null) {
+                      loadMahasiswaData(token); // Muat ulang data
+                    }
                   }
                 },
                 icon: const Icon(Icons.add, size: 18, color: Colors.white,),

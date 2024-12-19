@@ -28,6 +28,7 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
   String? tglSidang;
   String? ruangSidang;
   String? sesiSidang;
+  String? nilaiAkhir;
   int? statusLulus;
 
   Future<String> getDownloadDirectoryPath() async {
@@ -96,6 +97,7 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
         sesiSidang = data['data']['mahasiswa']['sesi_nama'];
 
         statusLulus = data['data']['taSidang']['status_lulus'];
+        nilaiAkhir = data['data']['taSidang']['nilai_akhir'];
       });
     } catch (e) {
       print('Error: $e');
@@ -119,13 +121,10 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
   }
 
   String _getStatusText() {
-    if (tglSidang == null) return 'Loading . . .';
+    if (nilaiAkhir == '') return 'Loading . . .';
 
     try {
-      final DateTime sidangDate = DateFormat('yyyy-MM-dd').parse(tglSidang!);
-      final DateTime currentDate = DateTime.now();
-
-      if (currentDate.isAfter(sidangDate)) {
+      if (nilaiAkhir != '') {
         return 'Sudah Sidang';
       } else {
         return 'Belum Sidang';
@@ -136,13 +135,10 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
   }
 
   Color _getStatusColor() {
-    if (tglSidang == null) return Colors.grey;
+    if (nilaiAkhir == '') return Colors.grey;
 
     try {
-      final DateTime sidangDate = DateFormat('yyyy-MM-dd').parse(tglSidang!);
-      final DateTime currentDate = DateTime.now();
-
-      if (currentDate.isAfter(sidangDate)) {
+      if (nilaiAkhir != '') {
         return Colors.green; // Warna hijau untuk Sudah Sidang
       } else {
         return Colors.red; // Warna merah untuk Belum Sidang

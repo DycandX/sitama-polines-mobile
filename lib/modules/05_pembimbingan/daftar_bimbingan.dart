@@ -225,7 +225,7 @@ class _DaftarBimbinganScreenState extends State<DaftarBimbinganScreen> {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pop(context, true);
                             },
                             icon: const Icon(Icons.arrow_back, color: Colors.white),
                           ),

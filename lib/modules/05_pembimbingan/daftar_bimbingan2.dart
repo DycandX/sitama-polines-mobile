@@ -228,7 +228,7 @@ class _DaftarBimbingan2State extends State<DaftarBimbingan2> {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pop(context, true);
                             },
                             icon: const Icon(Icons.arrow_back, color: Colors.white),
                           ),

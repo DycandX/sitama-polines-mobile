@@ -159,7 +159,7 @@ class _BuatBimbinganScreenState extends State<BuatBimbinganScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Bimbingan Berhasil Ditambahkan')),
           );
-          Navigator.pop(context);
+          Navigator.pop(context, true);
         } else {
           // final respStr = await response.stream.bytesToString();
           ScaffoldMessenger.of(context).showSnackBar(

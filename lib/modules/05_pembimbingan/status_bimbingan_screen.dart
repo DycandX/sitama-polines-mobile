@@ -136,9 +136,16 @@ class _StatusBimbinganScreenState extends State<StatusBimbinganScreen> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context,true);
+    return false;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
@@ -163,7 +170,7 @@ class _StatusBimbinganScreenState extends State<StatusBimbinganScreen> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -264,6 +271,7 @@ class _StatusBimbinganScreenState extends State<StatusBimbinganScreen> {
           ],
         ),
       ),
+    )
     );
   }
 }

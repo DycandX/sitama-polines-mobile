@@ -33,10 +33,21 @@ class _JadwalSidangPageState extends State<JadwalSidangPage> {
 
           sesiData.forEach((sesiKey, ruanganData) {
             ruanganData.forEach((ruanganKey, mahasiswaList) {
+              // Periksa apakah semua elemen mahasiswaList kosong atau null
+              final isAvailable = mahasiswaList.every((item) =>
+              item == null || (item is String && item.trim().isEmpty));
+
+              // Tentukan status berdasarkan ketersediaan dan waktu
+              final status = parsedDate.isBefore(DateTime.now())
+                  ? 'Tidak Tersedia' // Jika tanggal sudah lewat
+                  : isAvailable
+                  ? 'Tersedia' // Jika tersedia dan belum lewat
+                  : 'Tidak Tersedia'; // Jika ada data valid
+
               sesiList.add({
                 'sesi': sesiKey,
                 'ruangan': ruanganKey,
-                'status': parsedDate.isBefore(DateTime.now()) ? 'Tidak Tersedia' : 'Tersedia',
+                'status': status,
               });
             });
           });

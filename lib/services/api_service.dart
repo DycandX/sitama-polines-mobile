@@ -26,5 +26,5 @@ class AuthProvider with ChangeNotifier {
 }
 
 class Config {
-  static const String baseUrl = 'http://sitama-new.test/api/v1/';
+  static const String baseUrl = 'http://192.168.1.18/sitama-new/public/api/v1/';
 }

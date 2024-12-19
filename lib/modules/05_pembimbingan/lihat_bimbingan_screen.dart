@@ -94,10 +94,17 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
   }
   // End of API Code
 
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context,true);
+    return false;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
     print(masterJumlah);
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         leadingWidth: 10, // Adjusted for better alignment
@@ -122,7 +129,7 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pop(context, true);
                             },
                             icon: const Icon(Icons.arrow_back, color: Colors.white),
                           ),
@@ -167,13 +174,20 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                       pembimbing_count_1,
                       masterJumlah,
                     ),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DaftarBimbinganScreen(pembimbing: pembimbing1),
                         ),
                       );
+
+                      if (result == true) {
+                        final token = Provider.of<AuthProvider>(context, listen: false).token;
+                        if (token != null) {
+                          loadMahasiswaData(token); // Muat ulang data
+                        }
+                      }
                     },
                   ),
                   const SizedBox(height: 16),
@@ -189,13 +203,20 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                       pembimbing_count_2,
                       masterJumlah,
                     ),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DaftarBimbingan2(pembimbing: pembimbing2),
                         ),
                       );
+
+                      if (result == true) {
+                        final token = Provider.of<AuthProvider>(context, listen: false).token;
+                        if (token != null) {
+                          loadMahasiswaData(token); // Muat ulang data
+                        }
+                      }
                     },
                   ),
                 ],
@@ -209,6 +230,7 @@ class _LihatBimbinganScreenState extends State<LihatBimbinganScreen> {
                 ),
               ),
       ),
+    )
     );
   }
 }

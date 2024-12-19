@@ -28,27 +28,36 @@ class _DatamhsTaState extends State<DatamhsTa> {
   Future<void> sendPostRequest() async {
     final String url = '${Config.baseUrl}setujui-pembimbingan/${widget.bimbLogId}';
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',  // Pastikan token ada di sini
+          'Authorization': 'Bearer $token',
         },
       );
 
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
-        // Handle successful response
-        print('Response data: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berhasil disetujui')),
+        );
       } else {
-        // Handle error response
-        print(url);
-        print('Failed to send data: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal disetujui')),
+        );
       }
     } catch (e) {
-      print('Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
+
   String? userName;
   @override
   void didChangeDependencies() {
@@ -59,9 +68,16 @@ class _DatamhsTaState extends State<DatamhsTa> {
   }
   // End of API Code
 
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context,true);
+    return false;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(0, 40, 20, 0),
@@ -81,7 +97,7 @@ class _DatamhsTaState extends State<DatamhsTa> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.pop(context, "refresh");
+                        Navigator.pop(context, true);
                       },
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -126,7 +142,6 @@ class _DatamhsTaState extends State<DatamhsTa> {
             ),
             // Student Info Card
             SizedBox(
-              child: Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15,0,0,0),
                   child: Card(
@@ -194,69 +209,73 @@ class _DatamhsTaState extends State<DatamhsTa> {
                                   width: 130,
                                   height: 40,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                            backgroundColor: Color.fromRGBO(40, 42, 116, 1), // Custom background color
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  "Apakah Anda Yakin Ingin Menyetujui Bimbingan?",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white, // Text color
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 20),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: [
-                                                    // Cancel Button
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop(); // Close the dialog
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Colors.red,
-                                                        shape: CircleBorder(),
-                                                        padding: EdgeInsets.all(16),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    // Confirm Button
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                        sendPostRequest();
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Colors.green,
-                                                        shape: CircleBorder(),
-                                                        padding: EdgeInsets.all(16),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      );
+                                    onPressed: () async {
+                                      // showDialog(
+                                      //   context: context,
+                                      //   builder: (BuildContext context) {
+                                      //     return AlertDialog(
+                                      //       shape: RoundedRectangleBorder(
+                                      //         borderRadius: BorderRadius.circular(20),
+                                      //       ),
+                                      //       backgroundColor: Color.fromRGBO(40, 42, 116, 1), // Custom background color
+                                      //       content: Column(
+                                      //         mainAxisSize: MainAxisSize.min,
+                                      //         children: [
+                                      //           Text(
+                                      //             "Apakah Anda Yakin Ingin Menyetujui Bimbingan?",
+                                      //             textAlign: TextAlign.center,
+                                      //             style: TextStyle(
+                                      //               color: Colors.white, // Text color
+                                      //               fontWeight: FontWeight.bold,
+                                      //               fontSize: 16,
+                                      //             ),
+                                      //           ),
+                                      //           SizedBox(height: 20),
+                                      //           Row(
+                                      //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      //             children: [
+                                      //               // Cancel Button
+                                      //               ElevatedButton(
+                                      //                 onPressed: () {
+                                      //                   Navigator.of(context).pop(); // Close the dialog
+                                      //                 },
+                                      //                 style: ElevatedButton.styleFrom(
+                                      //                   backgroundColor: Colors.red,
+                                      //                   shape: CircleBorder(),
+                                      //                   padding: EdgeInsets.all(16),
+                                      //                 ),
+                                      //                 child: Icon(
+                                      //                   Icons.close,
+                                      //                   color: Colors.white,
+                                      //                 ),
+                                      //               ),
+                                      //               // Confirm Button
+                                      //               ElevatedButton(
+                                      //                 onPressed: () {
+                                      //                   Navigator.pop(context, true);
+                                      //                   sendPostRequest();
+                                      //                 },
+                                      //                 style: ElevatedButton.styleFrom(
+                                      //                   backgroundColor: Colors.green,
+                                      //                   shape: CircleBorder(),
+                                      //                   padding: EdgeInsets.all(16),
+                                      //                 ),
+                                      //                 child: Icon(
+                                      //                   Icons.check,
+                                      //                   color: Colors.white,
+                                      //                 ),
+                                      //               ),
+                                      //             ],
+                                      //           ),
+                                      //         ],
+                                      //       ),
+                                      //     );
+                                      //   },
+                                      // );
+                                      await sendPostRequest(); // Pastikan operasi selesai
+                                      if (mounted) {
+                                        Navigator.pop(context, true); // Navigasi setelah operasi berhasil
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
@@ -284,10 +303,10 @@ class _DatamhsTaState extends State<DatamhsTa> {
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
+    )
     );
   }
 
