@@ -86,6 +86,9 @@ String truncateFileName(String fileName, {int maxLength = 50}) {
 class _DaftarTaScreenState extends State<DaftarTaScreen> {
   String? mhsNama;
   int? dataSidang;
+  int? partner_valid;
+  Map<String, dynamic>? partner;
+
   final DaftarTAController _controller = DaftarTAController();
   bool _isLoading = true;
 
@@ -96,6 +99,8 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
       setState(() {
         mhsNama = data['mahasiswa']['mhs_nama'];
         dataSidang = data['taSidang']?['ta_sidang_id'];
+        partner = data['partner'];
+        partner_valid = data['partner_valid'];
       });
       // Fetch daftar tugas
       await _controller.fetchDaftarTugas(token);
@@ -153,131 +158,159 @@ class _DaftarTaScreenState extends State<DaftarTaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Cek semua syarat diverifikasi
     bool allVerified = _controller.daftarTugas.every((item) => item.status == 'Diverifikasi');
+    print(partner_valid);
+    // Logika untuk menampilkan tombol
+    bool showDaftarSidangButton = false;
+    if (partner == null) {
+      // Jika patner null, cukup cek allVerified dan dataSidang
+      showDaftarSidangButton = allVerified && dataSidang == null && _controller.daftarTugas.isNotEmpty;
+    } else {
+      // Jika patner tidak null, cek nilai patner_valid
+      showDaftarSidangButton = allVerified && partner_valid == 1 && dataSidang == null && _controller.daftarTugas.isNotEmpty;
+    }
 
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: const Color.fromARGB(250, 250, 250, 250),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.0),
-        child: AppBar(
-          backgroundColor: const Color.fromARGB(250, 250, 250, 250),
-          automaticallyImplyLeading: false,
-          elevation: 0, // Menghapus shadow
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromRGBO(40, 42, 116, 1),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        GoRouter.of(context).pushReplacement('/home_mahasiswa');
-                      },
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80.0),
+          child: AppBar(
+            backgroundColor: const Color.fromARGB(250, 250, 250, 250),
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            flexibleSpace: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color.fromRGBO(40, 42, 116, 1),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          GoRouter.of(context).pushReplacement('/home_mahasiswa');
+                        },
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                Spacer(),
-                // Avatar dan Nama User
-                Row(
-                  children: [
-                    SizedBox(width: 30),
-                    Container(
+                  const Spacer(),
+                  Row(
+                    children: [
+                      const SizedBox(width: 30),
+                      Container(
                         width: 150,
                         child: Text(
-                          userName ?? "Loading...", // Ensure mhsNama is not null
+                          userName ?? "Loading...",
                           textAlign: TextAlign.right,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
-                        )
-                    ),
-                    SizedBox(width: 10),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.grey[200],
-                      child: Icon(Icons.person, size: 30, color: Colors.black),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  ..._controller.daftarTugas
-                      .map((item) => buildTugasAkhirItem(item)),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.grey[200],
+                        child: const Icon(Icons.person, size: 30, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            if (allVerified && dataSidang == null && _controller.daftarTugas.isNotEmpty)
-              ElevatedButton(
-                onPressed: () {
-                  if(dataSidang == null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DaftarTaInput(),
-                      ),
-                    );
-                  } else {
-                    controller.checkSyarat(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  minimumSize: Size(double.infinity, 50),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        8.0), // Ubah bentuk tombol menjadi kotak dengan edge
-                  ),
-                ),
-                child: Text('Daftar Sidang'),
-              ),
-            if (!allVerified)
-              Container(
-                color: Colors.yellow[700],
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(top: 16),
-                child: Row(
+          ),
+        ),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
                   children: [
-                    Icon(Icons.warning, color: Colors.black),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'PERHATIAN:Anda belum bisa mendaftar sidang. Semua syarat wajib diverifikasi terlebih dahulu.',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
+                    ..._controller.daftarTugas
+                        .map((item) => buildTugasAkhirItem(item)),
                   ],
                 ),
               ),
-          ],
+              if (showDaftarSidangButton)
+                ElevatedButton(
+                  onPressed: () {
+                    if (dataSidang == null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DaftarTaInput(),
+                        ),
+                      );
+                    } else {
+                      controller.checkSyarat(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    minimumSize: const Size(double.infinity, 50),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text('Daftar Sidang'),
+                ),
+              if(!showDaftarSidangButton && partner != null)
+                Container(
+                  color: Colors.yellow[700],
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning, color: Colors.black),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'PERHATIAN: Anda belum bisa mendaftar sidang. Anggota harus melengkapi syarat terlebih dahulu.',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (!allVerified)
+                Container(
+                  color: Colors.yellow[700],
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning, color: Colors.black),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'PERHATIAN: Anda belum bisa mendaftar sidang. Semua syarat wajib diverifikasi terlebih dahulu.',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
-    )
     );
   }
+
 
   Widget buildTugasAkhirItem(TugasAkhirItem item) {
     return Card(

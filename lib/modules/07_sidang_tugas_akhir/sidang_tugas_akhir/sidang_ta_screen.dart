@@ -121,10 +121,10 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
   }
 
   String _getStatusText() {
-    if (nilaiAkhir == '') return 'Loading . . .';
+    if (nilaiAkhir == null) return 'Loading . . .';
 
     try {
-      if (nilaiAkhir != '') {
+      if (nilaiAkhir != null) {
         return 'Sudah Sidang';
       } else {
         return 'Belum Sidang';
@@ -135,10 +135,10 @@ class _SidangTaScreenState extends State<SidangTaScreen> {
   }
 
   Color _getStatusColor() {
-    if (nilaiAkhir == '') return Colors.grey;
+    if (nilaiAkhir == null) return Colors.grey;
 
     try {
-      if (nilaiAkhir != '') {
+      if (nilaiAkhir != null) {
         return Colors.green; // Warna hijau untuk Sudah Sidang
       } else {
         return Colors.red; // Warna merah untuk Belum Sidang
