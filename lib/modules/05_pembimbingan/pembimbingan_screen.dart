@@ -28,6 +28,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
   int? pembimbing2_count;
   int? pembimbing1_count_total;
   int? pembimbing2_count_total;
+  String? judulFinal;
 
   bool isLoading = true;
 
@@ -42,6 +43,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
         pembimbing2_count = data['pembimbing2_count'];
         pembimbing1_count_total = data['pembimbing1_count_total'];
         pembimbing2_count_total = data['pembimbing2_count_total'];
+        judulFinal = data['data']['judul_final'];
 
         isLoading = false;
       });
@@ -281,6 +283,7 @@ class _PembimbinganScreenState extends State<PembimbinganScreen> {
             ),
             const SizedBox(height: 16),
             // Buat Bimbingan Button
+            if(judulFinal == null)
             Center(
               child: ElevatedButton.icon(
                 onPressed: () async {

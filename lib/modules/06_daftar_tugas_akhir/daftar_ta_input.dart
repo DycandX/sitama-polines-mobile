@@ -132,38 +132,45 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
       );
 
       if (response.statusCode == 200) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Berhasil"),
-            content: const Text("Judul Tugas Akhir berhasil disimpan."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("OK"),
-              ),
-            ],
-          ),
+        // showDialog(
+        //   context: context,
+        //   builder: (context) => AlertDialog(
+        //     title: const Text("Berhasil"),
+        //     content: const Text("Judul Tugas Akhir berhasil disimpan."),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () {
+        //           Navigator.pop(context);
+        //         },
+        //         child: const Text("OK"),
+        //       ),
+        //     ],
+        //   ),
+        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Judul Tugas Akhir Berhasil Ditambahkan')),
         );
+        Navigator.pop(context, true);
         _taInputController.clear();
         setState(() {
           selectedJadwal = null; // Reset selectedJadwal after successful submission
         });
       } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Gagal"),
-            content: Text("Error: ${response.body}"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
-          ),
+        // showDialog(
+        //   context: context,
+        //   builder: (context) => AlertDialog(
+        //     title: const Text("Gagal"),
+        //     content: Text("Error: ${response.body}"),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () => Navigator.pop(context),
+        //         child: const Text("OK"),
+        //       ),
+        //     ],
+        //   ),
+        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Judul Tugas Akhir Gagal Ditambahkan')),
         );
       }
     } catch (e) {
@@ -184,9 +191,18 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    // Menavigasi kembali jika tidak ada masalah
+    Navigator.pop(context, true);
+
+    return false;  // Menandakan bahwa pop boleh terjadi
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child:  Scaffold(
       backgroundColor: const Color.fromARGB(250, 250, 250, 250),
       appBar: AppBar(
         leadingWidth: 10,
@@ -211,7 +227,7 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
@@ -369,6 +385,7 @@ class _DaftarInputScreenState extends State<DaftarTaInput> {
           ],
         ),
       ),
+    )
     );
   }
 }

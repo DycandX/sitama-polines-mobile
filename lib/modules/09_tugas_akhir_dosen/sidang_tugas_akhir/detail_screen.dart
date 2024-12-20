@@ -292,50 +292,98 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 const SizedBox(height: 16),
                 if (!hideFields) ...[
-                  TextFormField(
-                    controller: kedisiplinanBimbinganController,
-                    decoration: const InputDecoration(
-                      labelText: 'Kedisiplinan dalam Bimbingan',
+                  if(widget.sebagai.toLowerCase() == "pembimbing") ...[
+                    TextFormField(
+                      controller: kedisiplinanBimbinganController,
+                      decoration: const InputDecoration(
+                        labelText: 'Kedisiplinan dalam Bimbingan',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Harus diisi' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: kreativitasPemecahanMasalahController,
-                    decoration: const InputDecoration(
-                      labelText: 'Kreativitas Pemecahan Masalah',
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: kreativitasPemecahanMasalahController,
+                      decoration: const InputDecoration(
+                        labelText: 'Kreativitas Pemecahan Masalah',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Harus diisi' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: penguasaanMateriController,
-                    decoration: const InputDecoration(
-                      labelText: 'Penguasaan Materi',
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: penguasaanMateriController,
+                      decoration: const InputDecoration(
+                        labelText: 'Penguasaan Materi',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Harus diisi' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: kelengkapanReferensiController,
-                    decoration: const InputDecoration(
-                      labelText: 'Kelengkapan dan Referensi',
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: kelengkapanReferensiController,
+                      decoration: const InputDecoration(
+                        labelText: 'Kelengkapan dan Referensi',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                    value == null || value.isEmpty ? 'Harus diisi' : null,
-                  ),
-                  const SizedBox(height: 32),
-                  ElevatedButton(
-                    onPressed: saveData,
-                    child: const Text('Simpan'),
-                  ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: saveData,
+                      child: const Text('Simpan'),
+                    ),
+                  ],
+                  if(widget.sebagai.toLowerCase() == "penguji") ...[
+                    TextFormField(
+                      controller: kedisiplinanBimbinganController,
+                      decoration: const InputDecoration(
+                        labelText: 'Isi dan Bobot Naskah',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: kreativitasPemecahanMasalahController,
+                      decoration: const InputDecoration(
+                        labelText: 'Penguasaan materi',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: penguasaanMateriController,
+                      decoration: const InputDecoration(
+                        labelText: 'Presentasi dan penampilan',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: kelengkapanReferensiController,
+                      decoration: const InputDecoration(
+                        labelText: 'Hasil rancang bangun',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                      value == null || value.isEmpty ? 'Harus diisi' : null,
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: saveData,
+                      child: const Text('Simpan'),
+                    ),
+                  ],
                 ],
               ],
             ),

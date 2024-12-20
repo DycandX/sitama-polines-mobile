@@ -33,75 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Color(0xFF282A74),
       body: Stack(
         children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              padding: EdgeInsets.all(16),
-              width: double.infinity,
-              height: 480,
-              margin: EdgeInsets.only(top: 50),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(height: 50),
-                  Text(
-                    userName ?? 'Loading..', 
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  // Text(
-                  //   'NIP: 123456789',
-                  //   style: TextStyle(
-                  //     fontFamily: 'Poppins',
-                  //     fontSize: 13,
-                  //   ),
-                  // ),
-                  SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showLogoutConfirmationDialog(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    child: Text(
-                      'LOG OUT',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 180,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.white,
-              ),
-            ),
-          ),
           Positioned(
             top: 150,
             left: 0,
@@ -117,6 +48,70 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 150),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    width: double.infinity,
+                    height: 480,
+                    margin: EdgeInsets.only(top: 50),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 50),
+                        Text(
+                          userName ?? 'Loading..',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        // Text(
+                        //   'NIP: 123456789',
+                        //   style: TextStyle(
+                        //     fontFamily: 'Poppins',
+                        //     fontSize: 13,
+                        //   ),
+                        // ),
+                        SizedBox(height: 40),
+                        ElevatedButton(
+                          onPressed: () {
+                            _showLogoutConfirmationDialog(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          child: Text(
+                            'LOG OUT',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
           ),
         ],
       ),

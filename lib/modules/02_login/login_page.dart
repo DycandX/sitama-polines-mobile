@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                               controller: _emailController,
                               decoration: InputDecoration(
                                 labelText: 'Email',
-                                hintText: 'dewa@gmail.com',
+                                hintText: 'Masukkan email . . .',
                                 hintStyle: TextStyle(
                                   color: Colors.grey.withOpacity(0.5),
                                 ),
@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                                   !_isPasswordVisible, // Toggle visibility
                               decoration: InputDecoration(
                                 labelText: 'Password',
-                                hintText: '',
+                                hintText: 'Masukkan password . . .',
                                 hintStyle: TextStyle(
                                   color: Colors.grey.withOpacity(0.5),
                                 ),
