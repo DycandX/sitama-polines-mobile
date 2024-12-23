@@ -342,7 +342,7 @@
                     ),
                     child: const Text('Daftar Sidang'),
                   ),
-                if(!showDaftarSidangButton && partner != null && !allVerified)
+                if(!showDaftarSidangButton && partner != null && partner_valid == 0)
                   Container(
                     color: Colors.yellow[700],
                     padding: const EdgeInsets.all(16),
