@@ -1,4 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_screen.dart';
+import 'package:pbl_sitama/modules/08_home_dosen/home_dosen_screen.dart';
+import 'package:http/http.dart';
+import 'package:pbl_sitama/modules/03_home_mahasiswa/home_mahasiswa_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../app_navigation.dart';
+import '../../services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +23,87 @@ class _LoginPageState extends State<LoginPage> {
   // State variables
   bool _isPasswordVisible = false;
   bool _isRememberMeChecked = false; // State for Remember Me checkbox
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _login(String email, String password) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    try {
+      Response response = await post(
+        Uri.parse('${Config.baseUrl}login'),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse response and extract token
+        var data = jsonDecode(response.body);
+        final token = data['token'];
+        final role = data['role'];
+        final userName = data['user']['name'];
+
+        // Print login success for debugging
+        print('Login successfully');
+        print('Token: $token');
+        print('User  Name: $userName');
+
+        // Set token using Provider
+        Provider.of<AuthProvider>(context, listen: false).setToken(token);
+        Provider.of<AuthProvider>(context, listen: false).setUser(userName);
+
+        // Navigate based on user type
+        if (role.contains("dosen")) {
+          context.go('/home');
+        } else if (role.contains("mahasiswa")){
+          // Navigate to homeMahasiswaScreen for students
+          context.go('/home_mahasiswa');
+        }
+      } else {
+        // Show error dialog if login fails
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Login Failed"),
+            content: const Text("Incorrect email or password."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error during login: $e");
+
+      // Show error dialog for network or server errors
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text("An error occurred: ${e.toString()}"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +137,12 @@ class _LoginPageState extends State<LoginPage> {
           SafeArea(
             child: Column(
               children: [
-                SizedBox(height: 150), // Adjust spacing to push form down
+                const SizedBox(height: 150), // Adjust spacing to push form down
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(20), // Rounded only at the top
                       ),
                       boxShadow: [
@@ -57,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -68,13 +161,14 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                                 height:
                                     30), // Space between white container and first TextField
                             TextField(
+                              controller: _emailController,
                               decoration: InputDecoration(
                                 labelText: 'Email',
-                                hintText: 'ilhamajirawan@gmail.com',
+                                hintText: 'Masukkan email . . .',
                                 hintStyle: TextStyle(
                                   color: Colors.grey.withOpacity(0.5),
                                 ),
@@ -83,13 +177,14 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 25),
+                            const SizedBox(height: 25),
                             TextField(
+                              controller: _passwordController,
                               obscureText:
                                   !_isPasswordVisible, // Toggle visibility
                               decoration: InputDecoration(
                                 labelText: 'Password',
-                                hintText: '**********',
+                                hintText: 'Masukkan password . . .',
                                 hintStyle: TextStyle(
                                   color: Colors.grey.withOpacity(0.5),
                                 ),
@@ -112,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 25),
+                            const SizedBox(height: 25),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -127,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                                         });
                                       },
                                     ),
-                                    Text('Remember me'),
+                                    const Text('Remember me'),
                                   ],
                                 ),
                                 TextButton(
@@ -139,19 +234,19 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () {
-                                // Add login functionality
-                              },
+                              onPressed: () => _login(
+                                  _emailController.text.toString(),
+                                  _passwordController.text.toString()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[600],
-                                minimumSize: Size(double.infinity, 50),
+                                minimumSize: const Size(double.infinity, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
                               ),
-                              child: Text(
+                              child: const Text(
                                 'Log In',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -160,19 +255,19 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             Row(
                               children: [
-                                Expanded(child: Divider()),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
+                                const Expanded(child: Divider()),
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 10.0),
                                   child: Text('Or'),
                                 ),
-                                Expanded(child: Divider()),
+                                const Expanded(child: Divider()),
                               ],
                             ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             OutlinedButton.icon(
                               onPressed: () {
                                 // Add Google sign-in functionality
@@ -182,13 +277,13 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 24,
                                 width: 24,
                               ),
-                              label: Text('Continue with Google'),
+                              label: const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
-                                minimumSize: Size(double.infinity, 50),
+                                minimumSize: const Size(double.infinity, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
-                                side: BorderSide(color: Colors.grey),
+                                side: const BorderSide(color: Colors.grey),
                               ),
                             ),
                           ],

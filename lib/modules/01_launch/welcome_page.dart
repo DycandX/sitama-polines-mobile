@@ -1,54 +1,30 @@
 import 'package:flutter/material.dart';
-import 'welcome_page2.dart';
-void main() => runApp(const MyApp());
+import 'package:pbl_sitama/modules/02_login/login_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: WelcomePage2(),
-    );
-  }
-}
-
-class WelcomePage2 extends StatefulWidget {
-  const WelcomePage2({super.key});
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
 
   @override
-  State<WelcomePage2> createState() => _WelcomePage2State();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomePage2State extends State<WelcomePage2>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
+class _WelcomePageState extends State<WelcomePage> {
+  final PageController _pageController = PageController();
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset(1.0, 0.0), // Start off-screen to the right
-      end: Offset.zero, // End at original position
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    // Start the animation when the widget is built
-    _controller.forward();
+    _pageController.addListener(() {
+      setState(() {
+        _currentIndex = _pageController.page?.round() ?? 0;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -59,7 +35,8 @@ class _WelcomePage2State extends State<WelcomePage2>
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // Row to position TextButton in the top right
+            const SizedBox(height: 30),
+            // Lewati Button
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -67,24 +44,8 @@ class _WelcomePage2State extends State<WelcomePage2>
                   onPressed: () {
                     Navigator.push(
                       context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const WelcomePage3(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0); // Slide from right
-                          const end = Offset.zero;
-                          const curve = Curves.easeInOut;
-
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          var offsetAnimation = animation.drive(tween);
-
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
-                        },
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
                       ),
                     );
                   },
@@ -100,89 +61,71 @@ class _WelcomePage2State extends State<WelcomePage2>
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
-            // SlideTransition for the image and text
-            SlideTransition(
-              position: _offsetAnimation,
-              child: Column(
-                children: [
-                  // Image Section
-                  Center(
-                    child: Image.asset(
-                      "../images/welcome_image2.png", // Replace with actual image path
-                      height: 550,
-                      width: 350,
-                      fit: BoxFit.contain,
-                    ),
+            // PageView untuk carousel
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                children: const [
+                  SlidingContent(
+                    imagePath: "assets/images/welcome_image.png",
+                    title: 'Kemudahan Setiap Langkah',
+                    description:
+                        'Nikmati kemudahan dalam mengelola proses tugas akhir Anda. Dari pengajuan proposal hingga persiapan sidang, semua terintegrasi dalam satu platform.',
                   ),
-                  const SizedBox(height: 20),
-                  // Text Section
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Efisiensi Membimbing',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  SlidingContent(
+                    imagePath: "assets/images/welcome_image2.png",
+                    title: 'Efisiensi Membimbing',
+                    description:
+                        'Pantau progress mahasiswa, berikan feedback secara real-time, dan jadwalkan sidang dengan mudah.',
                   ),
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Pantau progress mahasiswa, berikan feedback secara real-time, dan jadwalkan sidang dengan mudah.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
+                  SlidingContent(
+                    imagePath: "assets/images/welcome_image3.png",
+                    title: 'Memudahkan Administrasi',
+                    description:
+                        'Fokus pada penelitian dan penulisan tugas akhir mulai dari pengajuan hingga persetujuan.',
                   ),
                 ],
               ),
             ),
-            const Spacer(),
-            // Page Indicator and Navigation Button
+
+            // Indicator dan Next Button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Icon(Icons.circle, size: 10, color: Colors.grey),
-                    SizedBox(width: 5),
-                    Icon(Icons.circle,
-                        size: 10, color: Color.fromARGB(255, 8, 0, 255)),
-                    SizedBox(width: 5),
-                    Icon(Icons.circle, size: 10, color: Colors.grey),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const WelcomePage3(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0); // Slide from right
-                          const end = Offset.zero;
-                          const curve = Curves.easeInOut;
-
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          var offsetAnimation = animation.drive(tween);
-
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
-                        },
+                // Page indicators
+                Row(
+                  children: List.generate(3, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Icon(
+                        Icons.circle,
+                        size: 10,
+                        color: _currentIndex == index
+                            ? const Color.fromARGB(255, 8, 0, 255)
+                            : Colors.grey,
                       ),
                     );
+                  }),
+                ),
+                // Next Button
+                ElevatedButton(
+                  onPressed: () {
+                    if (_currentIndex < 2) {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    } else {
+                      // Mengarahkan ke LoginPage setelah halaman terakhir
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
@@ -200,6 +143,54 @@ class _WelcomePage2State extends State<WelcomePage2>
           ],
         ),
       ),
+    );
+  }
+}
+
+class SlidingContent extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String description;
+
+  const SlidingContent({
+    super.key,
+    required this.imagePath,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Image.asset(
+            imagePath,
+            height: 400,
+            width: 350,
+            fit: BoxFit.contain,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 14,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
     );
   }
 }
